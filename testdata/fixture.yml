@@ -1,6 +1,7 @@
 - model: Project
   rows:
     - _id: project1
+      name: "Test Project"
 
 - model: Model
   rows:
@@ -13,15 +14,28 @@
     - _id: file1
       project_id: "{{ $.Project.project1.ID }}"
       content: initial content
+    - _id: file2
+      project_id: "{{ $.Project.project1.ID }}"
+      content: generated content
 
 - model: Block
   rows:
     - _id: block1
       model_id: "{{ $.Model.model1.ID }}"
+      type: "STANDARD"
+      name: "Standard Block"
+    - _id: block2
+      model_id: "{{ $.Model.model1.ID }}"
+      type: "GENERATED"
+      name: "Generated Block"
 
 - model: Parameter
   rows:
     - _id: param1
       block_id: "{{ $.Block.block1.ID }}"
       file_id: "{{ $.File.file1.ID }}"
-      key: initial_key
+      key: standard_param
+    - _id: param2
+      block_id: "{{ $.Block.block2.ID }}"
+      file_id: "{{ $.File.file2.ID }}"
+      key: generated_param
