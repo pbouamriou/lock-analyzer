@@ -1,0 +1,27 @@
+- model: Project
+  rows:
+    - _id: project1
+
+- model: Model
+  rows:
+    - _id: model1
+      project_id: "{{ $.Project.project1.ID }}"
+      state: initial
+
+- model: File
+  rows:
+    - _id: file1
+      project_id: "{{ $.Project.project1.ID }}"
+      content: initial content
+
+- model: Block
+  rows:
+    - _id: block1
+      model_id: "{{ $.Model.model1.ID }}"
+
+- model: Parameter
+  rows:
+    - _id: param1
+      block_id: "{{ $.Block.block1.ID }}"
+      file_id: "{{ $.File.file1.ID }}"
+      key: initial_key
