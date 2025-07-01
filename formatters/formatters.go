@@ -11,17 +11,17 @@ import (
 	"github.com/uptrace/bun"
 )
 
-// LockReportFormatter définit l'interface pour formater et écrire des rapports de locks
+// LockReportFormatter defines the interface for formatting and writing lock reports
 type LockReportFormatter interface {
 	Format(data *lockanalyzer.ReportData, output io.Writer) error
 	GetFileExtension() string
 }
 
-// NewFormatter crée un nouveau formatter pour le format et la langue spécifiés
+// NewFormatter creates a new formatter for the specified format and language
 func NewFormatter(format, lang string) (LockReportFormatter, error) {
-	// Valider la langue
+	// Validate language
 	if !i18n.IsValidLanguage(lang) {
-		lang = "fr" // Français par défaut
+		lang = "fr" // French as default
 	}
 
 	switch format {
@@ -32,54 +32,54 @@ func NewFormatter(format, lang string) (LockReportFormatter, error) {
 	case "json":
 		return NewJSONFormatter(lang), nil
 	default:
-		return nil, fmt.Errorf("format non supporté: %s", format)
+		return nil, fmt.Errorf("unsupported format: %s", format)
 	}
 }
 
-// GetAvailableFormats retourne la liste des formats disponibles
+// GetAvailableFormats returns the list of available formats
 func GetAvailableFormats() []string {
 	return []string{"text", "markdown", "json"}
 }
 
-// GetAvailableLanguages retourne la liste des langues disponibles
+// GetAvailableLanguages returns the list of available languages
 func GetAvailableLanguages() []string {
 	return i18n.GetAvailableLanguages()
 }
 
-// GenerateAndWriteReport génère un rapport et l'écrit en utilisant le formatter spécifié
+// GenerateAndWriteReport generates a report and writes it using the specified formatter
 func GenerateAndWriteReport(db *bun.DB, formatter LockReportFormatter, filename string) error {
-	// Générer les données du rapport
+	// Generate report data
 	reportData, err := lockanalyzer.GenerateLocksReport(db)
 	if err != nil {
-		return fmt.Errorf("erreur lors de la génération des données du rapport: %v", err)
+		return fmt.Errorf("error generating report data: %v", err)
 	}
 
-	// Créer le fichier de sortie
+	// Create output file
 	file, err := os.Create(filename)
 	if err != nil {
-		return fmt.Errorf("erreur lors de la création du fichier %s: %v", filename, err)
+		return fmt.Errorf("error creating file %s: %v", filename, err)
 	}
 	defer file.Close()
 
-	// Formater et écrire le rapport
+	// Format and write the report
 	if err := formatter.Format(reportData, file); err != nil {
-		return fmt.Errorf("erreur lors du formatage du rapport: %v", err)
+		return fmt.Errorf("error formatting report: %v", err)
 	}
 
 	return nil
 }
 
-// GenerateAndDisplayReport génère un rapport et l'affiche sur stdout en utilisant le formatter spécifié
+// GenerateAndDisplayReport generates a report and displays it on stdout using the specified formatter
 func GenerateAndDisplayReport(db *bun.DB, formatter LockReportFormatter) error {
-	// Générer les données du rapport
+	// Generate report data
 	reportData, err := lockanalyzer.GenerateLocksReport(db)
 	if err != nil {
-		return fmt.Errorf("erreur lors de la génération des données du rapport: %v", err)
+		return fmt.Errorf("error generating report data: %v", err)
 	}
 
-	// Formater et afficher le rapport
+	// Format and display the report
 	if err := formatter.Format(reportData, os.Stdout); err != nil {
-		return fmt.Errorf("erreur lors du formatage du rapport: %v", err)
+		return fmt.Errorf("error formatting report: %v", err)
 	}
 
 	return nil

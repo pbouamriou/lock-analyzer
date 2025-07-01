@@ -17,105 +17,105 @@ import (
 )
 
 func main() {
-	// Configuration des flags
+	// Flag configuration
 	var (
-		dsn      = flag.String("dsn", "", "DSN de connexion PostgreSQL (ex: postgres://user:pass@localhost:5432/db)")
-		format   = flag.String("format", "markdown", "Format de sortie: markdown, json, text")
-		lang     = flag.String("lang", "fr", "Langue du rapport: fr, en, es, de")
-		output   = flag.String("output", "stdout", "Fichier de sortie ou 'stdout' pour l'affichage")
-		interval = flag.Duration("interval", 0, "Intervalle de surveillance en temps réel (ex: 5s, 1m)")
-		help     = flag.Bool("help", false, "Afficher l'aide")
+		dsn      = flag.String("dsn", "", "PostgreSQL connection DSN (e.g., postgres://user:pass@localhost:5432/db)")
+		format   = flag.String("format", "markdown", "Output format: markdown, json, text")
+		lang     = flag.String("lang", "fr", "Report language: fr, en, es, de")
+		output   = flag.String("output", "stdout", "Output file or 'stdout' for display")
+		interval = flag.Duration("interval", 0, "Real-time monitoring interval (e.g., 5s, 1m)")
+		help     = flag.Bool("help", false, "Show help")
 	)
 	flag.Parse()
 
-	// Affichage de l'aide
+	// Display help
 	if *help {
 		printHelp()
 		return
 	}
 
-	// Validation des paramètres
+	// Parameter validation
 	if *dsn == "" {
-		log.Fatal("Le paramètre -dsn est obligatoire")
+		log.Fatal("The -dsn parameter is required")
 	}
 
-	// Validation du format
+	// Format validation
 	validFormats := map[string]bool{"markdown": true, "json": true, "text": true}
 	if !validFormats[*format] {
-		log.Fatalf("Format invalide: %s. Formats supportés: markdown, json, text", *format)
+		log.Fatalf("Invalid format: %s. Supported formats: markdown, json, text", *format)
 	}
 
-	// Validation de la langue
+	// Language validation
 	validLangs := map[string]bool{"fr": true, "en": true, "es": true, "de": true}
 	if !validLangs[*lang] {
-		log.Fatalf("Langue invalide: %s. Langues supportées: fr, en, es, de", *lang)
+		log.Fatalf("Invalid language: %s. Supported languages: fr, en, es, de", *lang)
 	}
 
-	// Connexion à la base de données
+	// Database connection
 	db, err := connectDB(*dsn)
 	if err != nil {
-		log.Fatalf("Erreur de connexion à la base de données: %v", err)
+		log.Fatalf("Database connection error: %v", err)
 	}
 	defer db.Close()
 
-	// Création du formatter
+	// Create formatter
 	formatter, err := formatters.NewFormatter(*format, *lang)
 	if err != nil {
-		log.Fatalf("Erreur lors de la création du formatter: %v", err)
+		log.Fatalf("Error creating formatter: %v", err)
 	}
 
-	// Mode surveillance en temps réel
+	// Real-time monitoring mode
 	if *interval > 0 {
 		runRealTimeMonitoring(db, formatter, *interval, *output)
 		return
 	}
 
-	// Mode rapport unique
+	// Single report mode
 	generateSingleReport(db, formatter, *output)
 }
 
 func printHelp() {
-	fmt.Print(`🔒 LockAnalyzer - Outil d'analyse des locks PostgreSQL
+	fmt.Print(`🔒 LockAnalyzer - PostgreSQL Lock Analysis Tool
 
 USAGE:
   lockanalyzer -dsn="postgres://user:pass@localhost:5432/db" [options]
 
-PARAMÈTRES OBLIGATOIRES:
+REQUIRED PARAMETERS:
   -dsn string
-        DSN de connexion PostgreSQL
-        Exemple: postgres://user:pass@localhost:5432/db
+        PostgreSQL connection DSN
+        Example: postgres://user:pass@localhost:5432/db
 
 OPTIONS:
   -format string
-        Format de sortie (défaut: markdown)
-        Valeurs: markdown, json, text
+        Output format (default: markdown)
+        Values: markdown, json, text
 
   -lang string
-        Langue du rapport (défaut: fr)
-        Valeurs: fr, en, es, de
+        Report language (default: fr)
+        Values: fr, en, es, de
 
   -output string
-        Fichier de sortie (défaut: stdout)
-        Utiliser 'stdout' pour l'affichage à l'écran
+        Output file (default: stdout)
+        Use 'stdout' for screen display
 
   -interval duration
-        Surveillance en temps réel
-        Exemples: 5s, 30s, 1m, 5m
+        Real-time monitoring
+        Examples: 5s, 30s, 1m, 5m
 
   -help
-        Afficher cette aide
+        Show this help
 
-EXEMPLES:
-  # Rapport unique en Markdown vers stdout (français)
+EXAMPLES:
+  # Single report in Markdown to stdout (French)
   lockanalyzer -dsn="postgres://user@localhost:5432/testdb" -format=markdown
 
-  # Rapport JSON en anglais vers fichier
+  # JSON report in English to file
   lockanalyzer -dsn="postgres://user@localhost:5432/testdb" -format=json -lang=en -output=report.json
 
-  # Surveillance en temps réel toutes les 10 secondes (espagnol)
+  # Real-time monitoring every 10 seconds (Spanish)
   lockanalyzer -dsn="postgres://user@localhost:5432/testdb" -interval=10s -lang=es
 
-  # Surveillance en temps réel vers fichier (allemand)
+  # Real-time monitoring to file (German)
   lockanalyzer -dsn="postgres://user@localhost:5432/testdb" -interval=30s -lang=de -output=monitoring.txt
 `)
 }
@@ -126,9 +126,9 @@ func connectDB(dsn string) (*bun.DB, error) {
 		return nil, err
 	}
 
-	// Test de la connexion
+	// Test connection
 	if err := sqldb.Ping(); err != nil {
-		return nil, fmt.Errorf("impossible de se connecter à la base de données: %v", err)
+		return nil, fmt.Errorf("unable to connect to database: %v", err)
 	}
 
 	db := bun.NewDB(sqldb, pgdialect.New())
@@ -136,31 +136,31 @@ func connectDB(dsn string) (*bun.DB, error) {
 }
 
 func generateSingleReport(db *bun.DB, formatter formatters.LockReportFormatter, output string) {
-	fmt.Printf("🔍 Génération du rapport d'analyse des locks...\n")
+	fmt.Printf("🔍 Generating lock analysis report...\n")
 
 	if output == "stdout" {
-		// Affichage vers stdout
+		// Display to stdout
 		if err := formatters.GenerateAndDisplayReport(db, formatter); err != nil {
-			log.Fatalf("Erreur lors de la génération du rapport: %v", err)
+			log.Fatalf("Error generating report: %v", err)
 		}
 	} else {
-		// Écriture vers fichier
+		// Write to file
 		if err := formatters.GenerateAndWriteReport(db, formatter, output); err != nil {
-			log.Fatalf("Erreur lors de l'écriture du rapport: %v", err)
+			log.Fatalf("Error writing report: %v", err)
 		}
-		fmt.Printf("✅ Rapport généré: %s\n", output)
+		fmt.Printf("✅ Report generated: %s\n", output)
 	}
 }
 
 func runRealTimeMonitoring(db *bun.DB, formatter formatters.LockReportFormatter, interval time.Duration, output string) {
-	fmt.Printf("🔍 Surveillance en temps réel des locks (intervalle: %s)\n", interval)
-	fmt.Printf("📁 Sortie: %s\n", output)
-	fmt.Printf("⏹️  Appuyez sur Ctrl+C pour arrêter\n\n")
+	fmt.Printf("🔍 Real-time lock monitoring (interval: %s)\n", interval)
+	fmt.Printf("📁 Output: %s\n", output)
+	fmt.Printf("⏹️  Press Ctrl+C to stop\n\n")
 
 	ticker := time.NewTicker(interval)
 	defer ticker.Stop()
 
-	// Gestion de l'interruption
+	// Interrupt handling
 	sigChan := make(chan os.Signal, 1)
 	// signal.Notify(sigChan, syscall.SIGINT, syscall.SIGTERM)
 
@@ -172,12 +172,12 @@ func runRealTimeMonitoring(db *bun.DB, formatter formatters.LockReportFormatter,
 			timestamp := time.Now().Format("15:04:05")
 
 			if output == "stdout" {
-				fmt.Printf("\n--- Analyse #%d (%s) ---\n", counter, timestamp)
+				fmt.Printf("\n--- Analysis #%d (%s) ---\n", counter, timestamp)
 				if err := formatters.GenerateAndDisplayReport(db, formatter); err != nil {
-					log.Printf("Erreur lors de la génération du rapport: %v", err)
+					log.Printf("Error generating report: %v", err)
 				}
 			} else {
-				// Générer un nom de fichier avec timestamp
+				// Generate filename with timestamp
 				ext := formatter.GetFileExtension()
 				filename := fmt.Sprintf("%s_%s_%03d%s",
 					strings.TrimSuffix(output, ext),
@@ -186,14 +186,14 @@ func runRealTimeMonitoring(db *bun.DB, formatter formatters.LockReportFormatter,
 					ext)
 
 				if err := formatters.GenerateAndWriteReport(db, formatter, filename); err != nil {
-					log.Printf("Erreur lors de l'écriture du rapport: %v", err)
+					log.Printf("Error writing report: %v", err)
 				} else {
-					fmt.Printf("✅ Rapport #%d généré: %s\n", counter, filename)
+					fmt.Printf("✅ Report #%d generated: %s\n", counter, filename)
 				}
 			}
 
 		case <-sigChan:
-			fmt.Println("\n🛑 Surveillance arrêtée par l'utilisateur")
+			fmt.Println("\n🛑 Monitoring stopped by user")
 			return
 		}
 	}

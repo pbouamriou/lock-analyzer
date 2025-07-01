@@ -11,13 +11,13 @@ import (
 	"golang.org/x/text/language"
 )
 
-// Translator gère les traductions pour les rapports
+// Translator manages translations for reports
 type Translator struct {
 	bundle    *i18n.Bundle
 	localizer *i18n.Localizer
 }
 
-// detectSystemLanguage tente de détecter la langue système à partir des variables d'environnement
+// detectSystemLanguage attempts to detect system language from environment variables
 func detectSystemLanguage() string {
 	candidates := []string{
 		os.Getenv("LANG"),
@@ -45,12 +45,12 @@ func detectSystemLanguage() string {
 	return "fr" // fallback
 }
 
-// NewTranslator crée un nouveau traducteur pour la langue spécifiée
+// NewTranslator creates a new translator for the specified language
 func NewTranslator(lang string) *Translator {
 	bundle := i18n.NewBundle(language.English)
 	bundle.RegisterUnmarshalFunc("json", json.Unmarshal)
 
-	// Déterminer la langue à utiliser
+	// Determine language to use
 	chosenLang := lang
 	if chosenLang == "" || !IsValidLanguage(chosenLang) {
 		chosenLang = detectSystemLanguage()
@@ -59,13 +59,13 @@ func NewTranslator(lang string) *Translator {
 		chosenLang = "fr"
 	}
 
-	// Charger les fichiers de traduction
-	// Essayer plusieurs chemins possibles pour le dossier locales
+	// Load translation files
+	// Try several possible paths for the locales directory
 	possiblePaths := []string{
-		"locales",          // Depuis le répertoire racine
-		"../locales",       // Depuis un sous-répertoire
-		"../../locales",    // Depuis un sous-sous-répertoire
-		"../../../locales", // Depuis un sous-sous-sous-répertoire
+		"locales",          // From root directory
+		"../locales",       // From subdirectory
+		"../../locales",    // From sub-subdirectory
+		"../../../locales", // From sub-sub-subdirectory
 	}
 
 	var localesDir string
@@ -77,18 +77,18 @@ func NewTranslator(lang string) *Translator {
 	}
 
 	if localesDir != "" {
-		// Charger tous les fichiers .json dans le dossier locales
+		// Load all .json files in the locales directory
 		files, err := filepath.Glob(filepath.Join(localesDir, "*.json"))
 		if err == nil {
 			for _, file := range files {
-				fmt.Printf("Chargement du fichier de traduction: %s\n", file)
+				fmt.Printf("Loading translation file: %s\n", file)
 				bundle.MustLoadMessageFile(file)
 			}
 		} else {
-			fmt.Printf("Erreur lors de la recherche des fichiers de traduction: %v\n", err)
+			fmt.Printf("Error searching for translation files: %v\n", err)
 		}
 	} else {
-		fmt.Printf("Dossier locales non trouvé dans les chemins: %v\n", possiblePaths)
+		fmt.Printf("Locales directory not found in paths: %v\n", possiblePaths)
 	}
 
 	localizer := i18n.NewLocalizer(bundle, chosenLang)
@@ -99,7 +99,7 @@ func NewTranslator(lang string) *Translator {
 	}
 }
 
-// T traduit une clé avec des arguments optionnels
+// T translates a key with optional arguments
 func (t *Translator) T(key string, args ...interface{}) string {
 	if len(args) == 0 {
 		translation, err := t.localizer.Localize(&i18n.LocalizeConfig{
@@ -111,7 +111,7 @@ func (t *Translator) T(key string, args ...interface{}) string {
 		return translation
 	}
 
-	// Si des arguments sont fournis, les traiter comme des données de template
+	// If arguments are provided, treat them as template data
 	templateData := make(map[string]interface{})
 	for i, arg := range args {
 		templateData[fmt.Sprintf("arg%d", i+1)] = arg
@@ -127,7 +127,7 @@ func (t *Translator) T(key string, args ...interface{}) string {
 	return translation
 }
 
-// TWithData traduit une clé avec des données de template spécifiques
+// TWithData translates a key with specific template data
 func (t *Translator) TWithData(key string, data map[string]interface{}) string {
 	translation, err := t.localizer.Localize(&i18n.LocalizeConfig{
 		MessageID:    key,
@@ -139,12 +139,12 @@ func (t *Translator) TWithData(key string, data map[string]interface{}) string {
 	return translation
 }
 
-// GetAvailableLanguages retourne la liste des langues disponibles
+// GetAvailableLanguages returns the list of available languages
 func GetAvailableLanguages() []string {
 	return []string{"fr", "en", "es", "de"}
 }
 
-// IsValidLanguage vérifie si une langue est valide
+// IsValidLanguage checks if a language is valid
 func IsValidLanguage(lang string) bool {
 	validLangs := GetAvailableLanguages()
 	for _, validLang := range validLangs {

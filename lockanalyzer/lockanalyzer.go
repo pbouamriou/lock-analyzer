@@ -10,7 +10,7 @@ import (
 	"github.com/uptrace/bun"
 )
 
-// LockInfo contient les informations détaillées d'un lock
+// LockInfo contains detailed information about a lock
 type LockInfo struct {
 	PID           int
 	Mode          string
@@ -27,7 +27,7 @@ type LockInfo struct {
 	Object        string
 }
 
-// RowLockInfo contient les informations sur les locks de lignes
+// RowLockInfo contains information about row locks
 type RowLockInfo struct {
 	PID     int
 	Table   string
@@ -37,7 +37,7 @@ type RowLockInfo struct {
 	Granted bool
 }
 
-// BlockedTransaction contient les informations sur une transaction bloquée
+// BlockedTransaction contains information about a blocked transaction
 type BlockedTransaction struct {
 	PID       string
 	Duration  string
@@ -45,14 +45,14 @@ type BlockedTransaction struct {
 	WaitEvent string
 }
 
-// LongTransaction contient les informations sur une transaction longue
+// LongTransaction contains information about a long transaction
 type LongTransaction struct {
 	PID      string
 	Duration string
 	Query    string
 }
 
-// ObjectConflict contient les informations sur un conflit d'objet
+// ObjectConflict contains information about an object conflict
 type ObjectConflict struct {
 	Object         string
 	PIDs           []string
@@ -60,7 +60,7 @@ type ObjectConflict struct {
 	Recommendation string
 }
 
-// IndexInfo contient les informations sur un index
+// IndexInfo contains information about an index
 type IndexInfo struct {
 	Name  string
 	Table string
@@ -68,7 +68,7 @@ type IndexInfo struct {
 	Usage string
 }
 
-// DeadlockInfo contient les informations sur un deadlock potentiel
+// DeadlockInfo contains information about a potential deadlock
 type DeadlockInfo struct {
 	Transaction1   LockInfo
 	Transaction2   LockInfo
@@ -76,7 +76,7 @@ type DeadlockInfo struct {
 	Recommendation string
 }
 
-// ReportData contient toutes les données pour générer un rapport
+// ReportData contains all data needed to generate a report
 type ReportData struct {
 	Timestamp       time.Time
 	Locks           []LockInfo
@@ -90,7 +90,7 @@ type ReportData struct {
 	Summary         ReportSummary
 }
 
-// ReportSummary contient un résumé des problèmes détectés
+// ReportSummary contains a summary of detected issues
 type ReportSummary struct {
 	TotalLocks      int
 	BlockedTxns     int
@@ -102,13 +102,13 @@ type ReportSummary struct {
 	Recommendations int
 }
 
-// LockReportFormatter définit l'interface pour les formatters de rapports
+// LockReportFormatter defines the interface for report formatters
 type LockReportFormatter interface {
 	Format(data *ReportData, output io.Writer) error
 	GetFileExtension() string
 }
 
-// DetectBlockedTransactions détecte les transactions bloquées en temps réel
+// DetectBlockedTransactions detects blocked transactions in real-time
 func DetectBlockedTransactions(db *bun.DB) []string {
 	var blockedQueries []string
 
@@ -128,7 +128,7 @@ func DetectBlockedTransactions(db *bun.DB) []string {
 
 	rows, err := db.QueryContext(context.Background(), query)
 	if err != nil {
-		return []string{fmt.Sprintf("Erreur lors de la détection des transactions bloquées: %v", err)}
+		return []string{fmt.Sprintf("Error detecting blocked transactions: %v", err)}
 	}
 	defer rows.Close()
 
@@ -140,65 +140,65 @@ func DetectBlockedTransactions(db *bun.DB) []string {
 			continue
 		}
 
-		blockedQueries = append(blockedQueries, fmt.Sprintf("PID %d bloqué depuis %s: %s (événement: %s - %s)",
+		blockedQueries = append(blockedQueries, fmt.Sprintf("PID %d blocked for %s: %s (event: %s - %s)",
 			pid, duration, queryText, waitEventType, waitEvent))
 	}
 
 	return blockedQueries
 }
 
-// GenerateLocksReport génère un rapport complet des locks et retourne les données
+// GenerateLocksReport generates a complete locks report and returns the data
 func GenerateLocksReport(db *bun.DB) (*ReportData, error) {
-	// Collecter toutes les données
+	// Collect all data
 	data := &ReportData{
 		Timestamp: time.Now(),
 	}
 
-	// Récupérer les locks
+	// Retrieve locks
 	locks, err := getLocks(db)
 	if err != nil {
-		return nil, fmt.Errorf("erreur lors de la récupération des locks: %v", err)
+		return nil, fmt.Errorf("error retrieving locks: %v", err)
 	}
 	data.Locks = locks
 
-	// Récupérer les locks de lignes
+	// Retrieve row locks
 	rowLocks, err := getRowLocks(db)
 	if err != nil {
-		return nil, fmt.Errorf("erreur lors de la récupération des locks de lignes: %v", err)
+		return nil, fmt.Errorf("error retrieving row locks: %v", err)
 	}
 	data.RowLocks = rowLocks
 
-	// Analyser les deadlocks
+	// Analyze deadlocks
 	deadlocks := detectDeadlocks(locks)
 	data.Deadlocks = deadlocks
 
-	// Analyser les transactions bloquées
+	// Analyze blocked transactions
 	blockedTxns := detectBlockedTransactions(locks)
 	data.BlockedTxns = blockedTxns
 
-	// Analyser les transactions longues
+	// Analyze long transactions
 	longTxns := detectLongTransactions(db)
 	data.LongTxns = longTxns
 
-	// Analyser les conflits d'objets
+	// Analyze object conflicts
 	objectConflicts := detectObjectConflicts(locks)
 	data.ObjectConflicts = objectConflicts
 
-	// Analyser les index
+	// Analyze indexes
 	indexAnalysis := analyzeIndexes(db)
 	data.IndexAnalysis = indexAnalysis
 
-	// Générer les suggestions
+	// Generate suggestions
 	suggestions := generateSuggestions(data)
 	data.Suggestions = suggestions
 
-	// Calculer le résumé
+	// Calculate summary
 	data.Summary = calculateSummary(data)
 
 	return data, nil
 }
 
-// calculateSummary calcule le résumé des problèmes détectés
+// calculateSummary calculates the summary of detected issues
 func calculateSummary(data *ReportData) ReportSummary {
 	summary := ReportSummary{
 		TotalLocks:      len(data.Locks),
@@ -209,56 +209,53 @@ func calculateSummary(data *ReportData) ReportSummary {
 		Recommendations: len(data.Suggestions),
 	}
 
-	// Calculer les problèmes critiques
+	// Calculate critical issues
 	summary.CriticalIssues = summary.Deadlocks + summary.BlockedTxns
 
-	// Calculer les avertissements
+	// Calculate warnings
 	summary.Warnings = summary.LongTxns + summary.ObjectConflicts
 
 	return summary
 }
 
-// generateSuggestions génère des suggestions basées sur l'analyse
+// generateSuggestions generates suggestions based on analysis
 func generateSuggestions(data *ReportData) []string {
 	var suggestions []string
 
-	// Suggestions basées sur les transactions bloquées
+	// Suggestions based on blocked transactions
 	if len(data.BlockedTxns) > 0 {
-		suggestions = append(suggestions, "Considérer l'ajout de timeouts sur les transactions longues")
-		suggestions = append(suggestions, "Vérifier l'ordre d'acquisition des locks pour éviter les blocages")
+		suggestions = append(suggestions, "Consider adding timeouts on long transactions")
+		suggestions = append(suggestions, "Check lock acquisition order to avoid deadlocks")
 	}
 
-	// Suggestions basées sur les transactions longues
+	// Suggestions based on long transactions
 	if len(data.LongTxns) > 0 {
-		suggestions = append(suggestions, "Diviser les transactions longues en transactions plus petites")
-		suggestions = append(suggestions, "Optimiser les requêtes pour réduire le temps d'exécution")
+		suggestions = append(suggestions, "Split long transactions into smaller ones")
+		suggestions = append(suggestions, "Optimize queries to reduce execution time")
 	}
 
-	// Suggestions basées sur les conflits d'objets
+	// Suggestions based on object conflicts
 	if len(data.ObjectConflicts) > 0 {
-		suggestions = append(suggestions, "Réviser la stratégie d'acquisition des locks")
-		suggestions = append(suggestions, "Considérer l'utilisation de niveaux d'isolation plus faibles si approprié")
+		suggestions = append(suggestions, "Review lock acquisition strategy")
+		suggestions = append(suggestions, "Consider using lower isolation levels if appropriate")
 	}
 
-	// Suggestions basées sur les deadlocks
+	// Suggestions based on deadlocks
 	if len(data.Deadlocks) > 0 {
-		suggestions = append(suggestions, "Implémenter une logique de retry avec backoff exponentiel")
-		suggestions = append(suggestions, "Standardiser l'ordre d'accès aux tables pour éviter les deadlocks")
+		suggestions = append(suggestions, "Implement retry logic with exponential backoff")
+		suggestions = append(suggestions, "Standardize table access order to avoid deadlocks")
 	}
 
-	// Suggestions générales
+	// General suggestions
 	if len(data.Locks) > 10 {
-		suggestions = append(suggestions, "Considérer l'optimisation des index pour réduire les locks")
-	}
-
-	if len(suggestions) == 0 {
-		suggestions = append(suggestions, "Aucun problème critique détecté. Continuer à surveiller les performances")
+		suggestions = append(suggestions, "Consider reviewing transaction patterns")
+		suggestions = append(suggestions, "Monitor lock wait times regularly")
 	}
 
 	return suggestions
 }
 
-// getLocks récupère tous les locks actifs
+// getLocks retrieves all active locks
 func getLocks(db *bun.DB) ([]LockInfo, error) {
 	query := `
 		SELECT 
@@ -327,7 +324,7 @@ func getLocks(db *bun.DB) ([]LockInfo, error) {
 	return locks, nil
 }
 
-// getRowLocks récupère les locks de lignes
+// getRowLocks retrieves row locks
 func getRowLocks(db *bun.DB) ([]RowLockInfo, error) {
 	query := `
 		SELECT 
@@ -370,12 +367,12 @@ func getRowLocks(db *bun.DB) ([]RowLockInfo, error) {
 	return rowLocks, nil
 }
 
-// detectDeadlocks détecte les deadlocks potentiels
+// detectDeadlocks detects potential deadlocks
 func detectDeadlocks(locks []LockInfo) []DeadlockInfo {
 	var deadlocks []DeadlockInfo
 
-	// Logique simplifiée pour détecter les deadlocks
-	// En pratique, il faudrait une analyse plus complexe
+	// Simplified logic to detect deadlocks
+	// In practice, a more complex analysis would be needed
 	for i, lock1 := range locks {
 		for j, lock2 := range locks {
 			if i >= j {
@@ -400,11 +397,11 @@ func detectDeadlocks(locks []LockInfo) []DeadlockInfo {
 	return deadlocks
 }
 
-// detectBlockedTransactions détecte les transactions bloquées
+// detectBlockedTransactions detects blocked transactions
 func detectBlockedTransactions(locks []LockInfo) []BlockedTransaction {
 	var blocked []BlockedTransaction
 
-	// Logique simplifiée pour détecter les transactions bloquées
+	// Simplified logic to detect blocked transactions
 	for _, lock := range locks {
 		if !lock.Granted {
 			blocked = append(blocked, BlockedTransaction{
@@ -419,7 +416,7 @@ func detectBlockedTransactions(locks []LockInfo) []BlockedTransaction {
 	return blocked
 }
 
-// detectLongTransactions détecte les transactions longues
+// detectLongTransactions detects long transactions
 func detectLongTransactions(db *bun.DB) []LongTransaction {
 	query := `
 		SELECT 
@@ -462,7 +459,7 @@ func detectLongTransactions(db *bun.DB) []LongTransaction {
 	return longTxns
 }
 
-// detectObjectConflicts détecte les conflits d'objets
+// detectObjectConflicts detects object conflicts
 func detectObjectConflicts(locks []LockInfo) []ObjectConflict {
 	objectMap := make(map[string][]string)
 
@@ -487,7 +484,7 @@ func detectObjectConflicts(locks []LockInfo) []ObjectConflict {
 	return conflicts
 }
 
-// analyzeIndexes analyse les index
+// analyzeIndexes analyzes indexes
 func analyzeIndexes(db *bun.DB) []IndexInfo {
 	query := `
 		SELECT 

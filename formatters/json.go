@@ -11,21 +11,21 @@ import (
 	"concurrent-db/lockanalyzer"
 )
 
-// JSONFormatter formate les données en JSON avec support multilingue
+// JSONFormatter formats data as JSON with multilingual support
 type JSONFormatter struct {
 	translator *i18n.Translator
 }
 
-// NewJSONFormatter crée un nouveau formatter JSON pour la langue spécifiée
+// NewJSONFormatter creates a new JSON formatter for the specified language
 func NewJSONFormatter(lang string) *JSONFormatter {
 	return &JSONFormatter{
 		translator: i18n.NewTranslator(lang),
 	}
 }
 
-// Format implémente l'interface LockReportFormatter
+// Format implements the LockReportFormatter interface
 func (f *JSONFormatter) Format(data *lockanalyzer.ReportData, output io.Writer) error {
-	// Pour JSON, nous ajoutons les traductions dans les métadonnées
+	// For JSON, we add translations in the metadata
 	jsonData := map[string]interface{}{
 		"metadata": map[string]interface{}{
 			"language":                           f.translator.T("report_title"),
@@ -50,25 +50,25 @@ func (f *JSONFormatter) Format(data *lockanalyzer.ReportData, output io.Writer) 
 
 	jsonBytes, err := json.MarshalIndent(jsonData, "", "  ")
 	if err != nil {
-		return fmt.Errorf("erreur lors de la sérialisation JSON: %v", err)
+		return fmt.Errorf("error during JSON serialization: %v", err)
 	}
 
 	_, err = output.Write(jsonBytes)
 	return err
 }
 
-// GetFileExtension retourne l'extension de fichier pour ce formatter
+// GetFileExtension returns the file extension for this formatter
 func (f *JSONFormatter) GetFileExtension() string {
 	return "json"
 }
 
-// FormatJSON formate les données en JSON et les écrit vers un Writer (version legacy)
+// FormatJSON formats data as JSON and writes to a Writer (legacy version)
 func FormatJSON(data *lockanalyzer.ReportData, output io.Writer) error {
-	formatter := NewJSONFormatter("fr") // Français par défaut pour la compatibilité
+	formatter := NewJSONFormatter("fr") // French as default for compatibility
 	return formatter.Format(data, output)
 }
 
-// WriteJSONFile écrit le rapport JSON dans un fichier (version legacy)
+// WriteJSONFile writes the JSON report to a file (legacy version)
 func WriteJSONFile(data *lockanalyzer.ReportData, filename string) error {
 	if filename == "" {
 		filename = fmt.Sprintf("lock_analysis_%s.json", time.Now().Format("20060102_150405"))
@@ -76,7 +76,7 @@ func WriteJSONFile(data *lockanalyzer.ReportData, filename string) error {
 
 	file, err := os.Create(filename)
 	if err != nil {
-		return fmt.Errorf("erreur lors de la création du fichier: %v", err)
+		return fmt.Errorf("error creating file: %v", err)
 	}
 	defer file.Close()
 

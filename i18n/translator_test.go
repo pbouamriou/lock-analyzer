@@ -11,18 +11,18 @@ func TestNewTranslator(t *testing.T) {
 		lang     string
 		expected string
 	}{
-		{"français", "fr", "fr"},
-		{"anglais", "en", "en"},
-		{"espagnol", "es", "es"},
-		{"allemand", "de", "de"},
-		{"langue invalide", "invalid", "fr"}, // Français par défaut
+		{"French", "fr", "fr"},
+		{"English", "en", "en"},
+		{"Spanish", "es", "es"},
+		{"German", "de", "de"},
+		{"Invalid language", "invalid", "fr"}, // French as default
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			translator := NewTranslator(tt.lang)
 			if translator == nil {
-				t.Fatal("NewTranslator ne devrait pas retourner nil")
+				t.Fatal("NewTranslator should not return nil")
 			}
 		})
 	}
@@ -33,7 +33,7 @@ func TestGetAvailableLanguages(t *testing.T) {
 	expected := []string{"fr", "en", "es", "de"}
 
 	if len(languages) != len(expected) {
-		t.Errorf("Nombre de langues incorrect: got %d, want %d", len(languages), len(expected))
+		t.Errorf("Incorrect number of languages: got %d, want %d", len(languages), len(expected))
 	}
 
 	for _, lang := range expected {
@@ -45,7 +45,7 @@ func TestGetAvailableLanguages(t *testing.T) {
 			}
 		}
 		if !found {
-			t.Errorf("Langue %s manquante dans la liste", lang)
+			t.Errorf("Language %s missing from list", lang)
 		}
 	}
 }
@@ -56,12 +56,12 @@ func TestIsValidLanguage(t *testing.T) {
 		lang     string
 		expected bool
 	}{
-		{"français valide", "fr", true},
-		{"anglais valide", "en", true},
-		{"espagnol valide", "es", true},
-		{"allemand valide", "de", true},
-		{"langue invalide", "invalid", false},
-		{"chaîne vide", "", false},
+		{"Valid French", "fr", true},
+		{"Valid English", "en", true},
+		{"Valid Spanish", "es", true},
+		{"Valid German", "de", true},
+		{"Invalid language", "invalid", false},
+		{"Empty string", "", false},
 	}
 
 	for _, tt := range tests {
@@ -77,16 +77,16 @@ func TestIsValidLanguage(t *testing.T) {
 func TestTranslator_T(t *testing.T) {
 	translator := NewTranslator("fr")
 
-	// Test avec une clé simple
+	// Test with a simple key
 	result := translator.T("report_title")
 	if result == "" {
-		t.Error("La traduction ne devrait pas être vide")
+		t.Error("Translation should not be empty")
 	}
 
-	// Test avec une clé inexistante (devrait retourner la clé elle-même)
+	// Test with a non-existent key (should return the key itself)
 	result = translator.T("nonexistent_key")
 	if result != "nonexistent_key" {
-		t.Errorf("Clé inexistante devrait retourner la clé elle-même, got: %s", result)
+		t.Errorf("Non-existent key should return the key itself, got: %s", result)
 	}
 }
 
@@ -100,17 +100,17 @@ func TestTranslator_TWithData(t *testing.T) {
 
 	result := translator.TWithData("lock_info_format", data)
 	if result == "" {
-		t.Error("La traduction avec données ne devrait pas être vide")
+		t.Error("Translation with data should not be empty")
 	}
 
-	// Vérifier que les arguments sont bien insérés
+	// Check that arguments are properly inserted
 	if result == "lock_info_format" {
-		t.Error("La traduction devrait inclure les arguments fournis")
+		t.Error("Translation should include the provided arguments")
 	}
 }
 
 func TestTranslatorLanguageSpecific(t *testing.T) {
-	// Test que les traductions sont différentes selon la langue
+	// Test that translations are different according to language
 	frTranslator := NewTranslator("fr")
 	enTranslator := NewTranslator("en")
 
@@ -118,7 +118,7 @@ func TestTranslatorLanguageSpecific(t *testing.T) {
 	enTitle := enTranslator.T("report_title")
 
 	if frTitle == enTitle {
-		t.Error("Les traductions français et anglais devraient être différentes")
+		t.Error("French and English translations should be different")
 	}
 }
 
@@ -130,7 +130,7 @@ func TestDetectSystemLanguage(t *testing.T) {
 		lcMsg    string
 		expected string
 	}{
-		{"Aucune variable", "", "", "", "fr"},
+		{"No variables", "", "", "", "fr"},
 		{"LANG=fr_FR.UTF-8", "fr_FR.UTF-8", "", "", "fr"},
 		{"LANG=en_US.UTF-8", "en_US.UTF-8", "", "", "en"},
 		{"LANG=es_ES.UTF-8", "es_ES.UTF-8", "", "", "es"},
@@ -139,17 +139,17 @@ func TestDetectSystemLanguage(t *testing.T) {
 		{"LC_ALL=en_US.UTF-8", "", "en_US.UTF-8", "", "en"},
 		{"LC_MESSAGES=es_ES.UTF-8", "", "", "es_ES.UTF-8", "es"},
 		{"LC_MESSAGES=de_DE.UTF-8", "", "", "de_DE.UTF-8", "de"},
-		{"Non supporté", "it_IT.UTF-8", "", "", "fr"},
+		{"Not supported", "it_IT.UTF-8", "", "", "fr"},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			// Sauvegarder l'ancien environnement
+			// Save old environment
 			oldLang := os.Getenv("LANG")
 			oldLcAll := os.Getenv("LC_ALL")
 			oldLcMsg := os.Getenv("LC_MESSAGES")
 
-			// Définir les variables d'environnement
+			// Set environment variables
 			os.Setenv("LANG", tt.langEnv)
 			os.Setenv("LC_ALL", tt.lcAll)
 			os.Setenv("LC_MESSAGES", tt.lcMsg)
@@ -159,7 +159,7 @@ func TestDetectSystemLanguage(t *testing.T) {
 				t.Errorf("detectSystemLanguage() = %s, want %s", lang, tt.expected)
 			}
 
-			// Restaurer l'environnement
+			// Restore environment
 			os.Setenv("LANG", oldLang)
 			os.Setenv("LC_ALL", oldLcAll)
 			os.Setenv("LC_MESSAGES", oldLcMsg)

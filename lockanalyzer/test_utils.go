@@ -3,7 +3,6 @@ package lockanalyzer
 import (
 	"context"
 	"database/sql"
-	"fmt"
 	"os"
 	"testing"
 	"time"
@@ -13,8 +12,8 @@ import (
 	"github.com/uptrace/bun/dialect/pgdialect"
 )
 
-// Modèles de test partagés pour tous les tests du package lockanalyzer
-// Ces modèles sont utilisés pour les fixtures Bun et les tests d'intégration
+// Shared test models for all tests in the lockanalyzer package
+// These models are used for Bun fixtures and integration tests
 
 type Project struct {
 	bun.BaseModel `bun:"table:projects"`
@@ -58,85 +57,41 @@ type Parameter struct {
 	File          *File  `bun:"rel:belongs-to,join:file_id=id"`
 }
 
-// TestDB contient une base de données de test avec fixtures
+// TestDB contains a test database with fixtures
 type TestDB struct {
 	DB *bun.DB
 }
 
-// setupTestDB configure une base de données de test avec fixtures
+// setupTestDB configures a test database with fixtures
 func setupTestDB(t *testing.T, fixtureFile string) *TestDB {
 	dsn := "postgres://philippebouamriou@localhost:5432/testdb?sslmode=disable"
 	sqldb, err := sql.Open("postgres", dsn)
 	if err != nil {
-		t.Fatalf("Erreur de connexion à la base de données: %v", err)
+		t.Fatalf("Database connection error: %v", err)
 	}
 
 	db := bun.NewDB(sqldb, pgdialect.New())
 
-	// Enregistrer les modèles avec Bun (comme recommandé dans la documentation officielle)
+	// Register models with Bun (as recommended in the official documentation)
 	db.RegisterModel((*Project)(nil), (*Model)(nil), (*File)(nil), (*Block)(nil), (*Parameter)(nil))
 
-	// Charger les fixtures
+	// Load fixtures
 	fixture := dbfixture.New(db, dbfixture.WithRecreateTables())
 	if err := fixture.Load(context.Background(), os.DirFS("../testdata"), fixtureFile); err != nil {
-		t.Fatalf("Erreur lors du chargement des fixtures: %v", err)
+		t.Fatalf("Error loading fixtures: %v", err)
 	}
 
-	// Créer les contraintes et triggers
+	// Create constraints and triggers
 	setupTestConstraints(t, db)
 
 	return &TestDB{DB: db}
 }
 
-// createTables crée les tables nécessaires pour les tests
-func createTables(t *testing.T, db *bun.DB) error {
-	ctx := context.Background()
-
-	// Créer les tables dans l'ordre (dépendances)
-	tables := []string{
-		`CREATE TABLE IF NOT EXISTS projects (
-			id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-			name TEXT NOT NULL,
-			modified_at TIMESTAMP DEFAULT NOW()
-		)`,
-		`CREATE TABLE IF NOT EXISTS models (
-			id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-			project_id UUID NOT NULL REFERENCES projects(id) ON DELETE CASCADE ON UPDATE CASCADE,
-			state TEXT
-		)`,
-		`CREATE TABLE IF NOT EXISTS files (
-			id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-			project_id UUID NOT NULL REFERENCES projects(id) ON DELETE CASCADE ON UPDATE CASCADE,
-			content TEXT
-		)`,
-		`CREATE TABLE IF NOT EXISTS blocks (
-			id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-			model_id UUID NOT NULL REFERENCES models(id) ON DELETE CASCADE,
-			type TEXT NOT NULL,
-			name TEXT
-		)`,
-		`CREATE TABLE IF NOT EXISTS parameters (
-			id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-			block_id UUID NOT NULL REFERENCES blocks(id) ON DELETE CASCADE,
-			key TEXT,
-			file_id UUID NOT NULL REFERENCES files(id) ON DELETE CASCADE
-		)`,
-	}
-
-	for _, tableSQL := range tables {
-		if _, err := db.ExecContext(ctx, tableSQL); err != nil {
-			return fmt.Errorf("erreur lors de la création de la table: %v", err)
-		}
-	}
-
-	return nil
-}
-
-// setupTestConstraints configure les contraintes et triggers pour les tests
+// setupTestConstraints configures constraints and triggers for tests
 func setupTestConstraints(t *testing.T, db *bun.DB) {
 	ctx := context.Background()
 
-	// Contraintes FK
+	// FK constraints
 	constraints := []string{
 		"ALTER TABLE models ADD CONSTRAINT fk_models_project_id FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE ON UPDATE CASCADE",
 		"ALTER TABLE files ADD CONSTRAINT fk_files_project_id FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE ON UPDATE CASCADE",
@@ -147,11 +102,11 @@ func setupTestConstraints(t *testing.T, db *bun.DB) {
 
 	for _, constraint := range constraints {
 		if _, err := db.ExecContext(ctx, constraint); err != nil {
-			t.Logf("Contrainte déjà existante ou erreur: %v", err)
+			t.Logf("Constraint already exists or error: %v", err)
 		}
 	}
 
-	// Index
+	// Indexes
 	indexes := []string{
 		"CREATE INDEX IF NOT EXISTS idx_models_project_id ON models(project_id)",
 		"CREATE INDEX IF NOT EXISTS idx_files_project_id ON files(project_id)",
@@ -159,7 +114,7 @@ func setupTestConstraints(t *testing.T, db *bun.DB) {
 
 	for _, index := range indexes {
 		if _, err := db.ExecContext(ctx, index); err != nil {
-			t.Logf("Index déjà existant ou erreur: %v", err)
+			t.Logf("Index already exists or error: %v", err)
 		}
 	}
 
@@ -170,53 +125,37 @@ func setupTestConstraints(t *testing.T, db *bun.DB) {
 		AS $$
 		BEGIN
 			IF TG_TABLE_NAME = 'models' THEN
-				IF (TG_OP = 'DELETE') THEN
-					UPDATE projects AS p SET modified_at = current_timestamp FROM old_table AS o WHERE p.id = o.project_id;
-				ELSE
-					UPDATE projects AS p SET modified_at = current_timestamp FROM new_table AS n WHERE p.id = n.project_id;
-				END IF;
+				UPDATE projects SET modified_at = current_timestamp WHERE id = NEW.project_id;
 			END IF;
 			
 			IF TG_TABLE_NAME = 'files' THEN
-				IF (TG_OP = 'DELETE') THEN
-					UPDATE projects AS p SET modified_at = current_timestamp 
-					FROM old_table AS o 
-					JOIN parameters param ON param.file_id = o.id
-					JOIN blocks b ON b.id = param.block_id
-					WHERE p.id = o.project_id AND b.type != 'GENERATED';
-				ELSE
-					UPDATE projects AS p SET modified_at = current_timestamp 
-					FROM new_table AS n 
-					JOIN parameters param ON param.file_id = n.id
-					JOIN blocks b ON b.id = param.block_id
-					WHERE p.id = n.project_id AND b.type != 'GENERATED';
-				END IF;
+				UPDATE projects SET modified_at = current_timestamp WHERE id = NEW.project_id;
 			END IF;
 			
-			RETURN NULL;
+			RETURN NEW;
 		END;
 		$$;
 	`
 	if _, err := db.ExecContext(ctx, triggerFunction); err != nil {
-		t.Logf("Fonction trigger déjà existante ou erreur: %v", err)
+		t.Logf("Trigger function already exists or error: %v", err)
 	}
 
 	// Triggers
 	triggers := []string{
-		"DROP TRIGGER IF EXISTS table_project_timestamp_update ON models",
-		"CREATE TRIGGER table_project_timestamp_update AFTER UPDATE ON models REFERENCING NEW TABLE AS new_table FOR EACH STATEMENT EXECUTE FUNCTION update_project_timestamp()",
-		"DROP TRIGGER IF EXISTS table_project_timestamp_update ON files",
-		"CREATE TRIGGER table_project_timestamp_update AFTER UPDATE ON files REFERENCING NEW TABLE AS new_table FOR EACH STATEMENT EXECUTE FUNCTION update_project_timestamp()",
+		"DROP TRIGGER IF EXISTS trigger_update_project_timestamp_models ON models",
+		"CREATE TRIGGER trigger_update_project_timestamp_models AFTER INSERT OR UPDATE OR DELETE ON models FOR EACH ROW EXECUTE FUNCTION update_project_timestamp()",
+		"DROP TRIGGER IF EXISTS trigger_update_project_timestamp_files ON files",
+		"CREATE TRIGGER trigger_update_project_timestamp_files AFTER INSERT OR UPDATE OR DELETE ON files FOR EACH ROW EXECUTE FUNCTION update_project_timestamp()",
 	}
 
 	for _, trigger := range triggers {
 		if _, err := db.ExecContext(ctx, trigger); err != nil {
-			t.Logf("Trigger déjà existant ou erreur: %v", err)
+			t.Logf("Trigger already exists or error: %v", err)
 		}
 	}
 }
 
-// cleanupTestDB ferme la connexion à la base de données
+// cleanupTestDB closes the database connection
 func (tdb *TestDB) cleanupTestDB() {
 	if tdb.DB != nil {
 		tdb.DB.Close()
