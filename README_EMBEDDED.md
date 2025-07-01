@@ -7,7 +7,7 @@ Ce projet utilise le système de fichiers embarqué (embed) de Go pour inclure l
 ### Structure des fichiers
 
 ```
-concurrent-db/
+lock-analyser/
 ├── locales/
 │   ├── en.json          # Traductions anglaises
 │   ├── fr.json          # Traductions françaises
@@ -172,10 +172,10 @@ content, err := fs.ReadFile(localesFS, "fr.json")
 
 ```bash
 # Lister les fichiers embarqués
-go run -c 'package main; import "concurrent-db/locales"; func main() { files, _ := locales.ListLocaleFiles(); for _, f := range files { println(f) } }'
+go run -c 'package main; import "lock-analyser/locales"; func main() { files, _ := locales.ListLocaleFiles(); for _, f := range files { println(f) } }'
 
 # Vérifier le contenu d'un fichier
-go run -c 'package main; import "concurrent-db/locales"; func main() { content, _ := locales.GetLocaleFile("fr.json"); println(string(content)) }'
+go run -c 'package main; import "lock-analyser/locales"; func main() { content, _ := locales.GetLocaleFile("fr.json"); println(string(content)) }'
 ```
 
 ### Mise à jour des traductions

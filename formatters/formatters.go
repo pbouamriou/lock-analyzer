@@ -5,8 +5,8 @@ import (
 	"io"
 	"os"
 
-	"concurrent-db/i18n"
-	"concurrent-db/lockanalyzer"
+	"lock-analyser/i18n"
+	"lock-analyser/lockanalyzer"
 
 	"github.com/uptrace/bun"
 )

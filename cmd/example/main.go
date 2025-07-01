@@ -9,7 +9,7 @@ import (
 
 	"database/sql"
 
-	"concurrent-db/formatters"
+	"lock-analyser/formatters"
 
 	_ "github.com/lib/pq"
 	"github.com/uptrace/bun"

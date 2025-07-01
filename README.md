@@ -1,10 +1,10 @@
 # LockAnalyzer 🔒
 
-[![Build Status](https://github.com/yourusername/concurrent-db/workflows/CI/badge.svg)](https://github.com/yourusername/concurrent-db/actions)
-[![Go Version](https://img.shields.io/github/go-mod/go-version/yourusername/concurrent-db)](https://golang.org/)
-[![License](https://img.shields.io/github/license/yourusername/concurrent-db)](LICENSE)
-[![Release](https://img.shields.io/github/v/release/yourusername/concurrent-db)](https://github.com/yourusername/concurrent-db/releases)
-[![Go Report Card](https://goreportcard.com/badge/github.com/yourusername/concurrent-db)](https://goreportcard.com/report/github.com/yourusername/concurrent-db)
+[![Build Status](https://github.com/pbouamriou/lock-analyzer/workflows/CI/badge.svg)](https://github.com/pbouamriou/lock-analyzer/actions)
+[![Go Version](https://img.shields.io/github/go-mod/go-version/pbouamriou/lock-analyzer)](https://golang.org/)
+[![License](https://img.shields.io/github/license/pbouamriou/lock-analyzer)](LICENSE)
+[![Release](https://img.shields.io/github/v/release/pbouamriou/lock-analyzer)](https://github.com/pbouamriou/lock-analyzer/releases)
+[![Go Report Card](https://goreportcard.com/badge/github.com/pbouamriou/lock-analyzer)](https://goreportcard.com/report/github.com/pbouamriou/lock-analyzer)
 
 A powerful PostgreSQL lock analysis tool written in Go that helps identify and resolve database concurrency issues.
 
@@ -23,8 +23,8 @@ A powerful PostgreSQL lock analysis tool written in Go that helps identify and r
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/concurrent-db.git
-cd concurrent-db
+git clone https://github.com/yourusername/lock-analyser.git
+cd lock-analyser
 
 # Build the application
 make build
@@ -49,7 +49,7 @@ make build
 ## Project Structure
 
 ```
-concurrent-db/
+lock-analyser/
 ├── cmd/
 │   ├── example/           # Example application
 │   └── lockanalyzer/      # CLI tool

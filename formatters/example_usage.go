@@ -1,9 +1,9 @@
 package formatters
 
 import (
-	"concurrent-db/lockanalyzer"
 	"fmt"
 	"io"
+	"lock-analyser/lockanalyzer"
 	"log"
 
 	"github.com/uptrace/bun"

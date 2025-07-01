@@ -1,7 +1,7 @@
 package main
 
 import (
-	"concurrent-db/locales"
+	"lock-analyser/locales"
 	"os"
 	"testing"
 )

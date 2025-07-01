@@ -10,7 +10,7 @@ import (
 	"testing"
 	"time"
 
-	"concurrent-db/lockanalyzer"
+	"lock-analyser/lockanalyzer"
 )
 
 // TestMarkdownFormatter tests the Markdown formatter

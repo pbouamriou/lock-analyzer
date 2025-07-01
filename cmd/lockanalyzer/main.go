@@ -9,8 +9,8 @@ import (
 	"strings"
 	"time"
 
-	"concurrent-db/formatters"
-	"concurrent-db/i18n"
+	"lock-analyser/formatters"
+	"lock-analyser/i18n"
 
 	_ "github.com/lib/pq"
 	"github.com/uptrace/bun"

@@ -6,7 +6,7 @@ import (
 	"testing"
 	"time"
 
-	"concurrent-db/lockanalyzer"
+	"lock-analyser/lockanalyzer"
 )
 
 func TestNewFormatter(t *testing.T) {

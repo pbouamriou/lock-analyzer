@@ -7,8 +7,8 @@ import (
 	"os"
 	"time"
 
-	"concurrent-db/i18n"
-	"concurrent-db/lockanalyzer"
+	"lock-analyser/i18n"
+	"lock-analyser/lockanalyzer"
 )
 
 // JSONFormatter formats data as JSON with multilingual support

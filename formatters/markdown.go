@@ -7,8 +7,8 @@ import (
 	"strings"
 	"time"
 
-	"concurrent-db/i18n"
-	"concurrent-db/lockanalyzer"
+	"lock-analyser/i18n"
+	"lock-analyser/lockanalyzer"
 )
 
 // MarkdownFormatter formats data as Markdown with multilingual support
