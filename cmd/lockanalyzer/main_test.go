@@ -40,6 +40,8 @@ func TestMainWithEmbeddedLocales(t *testing.T) {
 	expectedFiles := map[string]bool{
 		"en.json": false,
 		"fr.json": false,
+		"es.json": false,
+		"de.json": false,
 	}
 
 	for _, file := range files {

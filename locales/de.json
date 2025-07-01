@@ -1,0 +1,310 @@
+[
+    {
+        "id": "report_title",
+        "translation": "POSTGRESQL-SPERREN-ANALYSEBERICHT"
+    },
+    {
+        "id": "generated_at",
+        "translation": "Generiert am"
+    },
+    {
+        "id": "summary_title",
+        "translation": "EXECUTIVE SUMMARY"
+    },
+    {
+        "id": "total_locks",
+        "translation": "Aktive Sperren insgesamt"
+    },
+    {
+        "id": "blocked_transactions",
+        "translation": "Blockierte Transaktionen"
+    },
+    {
+        "id": "long_transactions",
+        "translation": "Lange Transaktionen"
+    },
+    {
+        "id": "deadlocks_detected",
+        "translation": "Erkannte Deadlocks"
+    },
+    {
+        "id": "object_conflicts",
+        "translation": "Objektkonflikte"
+    },
+    {
+        "id": "critical_issues",
+        "translation": "Kritische Probleme"
+    },
+    {
+        "id": "warnings",
+        "translation": "Warnungen"
+    },
+    {
+        "id": "recommendations",
+        "translation": "Empfehlungen"
+    },
+    {
+        "id": "active_locks",
+        "translation": "AKTIVE SPERREN"
+    },
+    {
+        "id": "blocked_transactions_section",
+        "translation": "BLOCKIERTE TRANSAKTIONEN"
+    },
+    {
+        "id": "long_transactions_section",
+        "translation": "LANGE TRANSAKTIONEN"
+    },
+    {
+        "id": "improvement_suggestions",
+        "translation": "VERBESSERUNGSVORSCHLÄGE"
+    },
+    {
+        "id": "timeout_suggestion",
+        "translation": "Timeout für lange Transaktionen in Betracht ziehen"
+    },
+    {
+        "id": "split_transaction_suggestion",
+        "translation": "Lange Transaktionen in kleinere Transaktionen aufteilen"
+    },
+    {
+        "id": "optimize_indexes_suggestion",
+        "translation": "Indizes optimieren, um Sperrzeiten zu reduzieren"
+    },
+    {
+        "id": "review_queries_suggestion",
+        "translation": "Abfragen überprüfen, um Konflikte zu minimieren"
+    },
+    {
+        "id": "lock_info_format",
+        "translation": "PID: {{.arg1}}, Modus: {{.arg2}}, Gewährt: {{.arg3}}, Typ: {{.arg4}}, Objekt: {{.arg5}}"
+    },
+    {
+        "id": "blocked_transaction_format",
+        "translation": "PID: {{.arg1}}, Dauer: {{.arg2}}, Abfrage: {{.arg3}}"
+    },
+    {
+        "id": "long_transaction_format",
+        "translation": "PID: {{.arg1}}, Dauer: {{.arg2}}, Abfrage: {{.arg3}}"
+    },
+    {
+        "id": "object_conflict_format",
+        "translation": "Objekt: {{.arg1}}, PIDs: {{.arg2}}"
+    },
+    {
+        "id": "index_info_format",
+        "translation": "Index: {{.arg1}}, Tabelle: {{.arg2}}, Größe: {{.arg3}}"
+    },
+    {
+        "id": "deadlock_info_format",
+        "translation": "Konflikt zwischen PID {{.arg1}} und PID {{.arg2}} auf {{.arg3}}"
+    },
+    {
+        "id": "no_locks_detected",
+        "translation": "Keine Sperren erkannt"
+    },
+    {
+        "id": "no_blocked_transactions",
+        "translation": "Keine blockierten Transaktionen"
+    },
+    {
+        "id": "no_long_transactions",
+        "translation": "Keine langen Transaktionen"
+    },
+    {
+        "id": "no_object_conflicts",
+        "translation": "Keine Objektkonflikte"
+    },
+    {
+        "id": "no_deadlocks",
+        "translation": "Keine Deadlocks erkannt"
+    },
+    {
+        "id": "no_indexes",
+        "translation": "Keine Indizes analysiert"
+    },
+    {
+        "id": "report_footer",
+        "translation": "Bericht automatisch generiert von LockAnalyzer"
+    },
+    {
+        "id": "cli_tool_title",
+        "translation": "LockAnalyzer - PostgreSQL-Sperren-Analysetool"
+    },
+    {
+        "id": "cli_usage",
+        "translation": "VERWENDUNG"
+    },
+    {
+        "id": "cli_required_parameters",
+        "translation": "ERFORDERLICHE PARAMETER"
+    },
+    {
+        "id": "cli_dsn_description",
+        "translation": "PostgreSQL-Verbindungs-DSN"
+    },
+    {
+        "id": "cli_dsn_example",
+        "translation": "Beispiel: postgres://user:pass@localhost:5432/db"
+    },
+    {
+        "id": "cli_options",
+        "translation": "OPTIONEN"
+    },
+    {
+        "id": "cli_format_description",
+        "translation": "Ausgabeformat (Standard: markdown)"
+    },
+    {
+        "id": "cli_format_values",
+        "translation": "Werte: markdown, json, text"
+    },
+    {
+        "id": "cli_lang_description",
+        "translation": "Berichtssprache (Standard: fr)"
+    },
+    {
+        "id": "cli_lang_values",
+        "translation": "Werte: fr, en, es, de"
+    },
+    {
+        "id": "cli_output_description",
+        "translation": "Ausgabedatei (Standard: stdout)"
+    },
+    {
+        "id": "cli_output_use",
+        "translation": "Verwenden Sie 'stdout' für die Bildschirmausgabe"
+    },
+    {
+        "id": "cli_interval_description",
+        "translation": "Echtzeitüberwachung"
+    },
+    {
+        "id": "cli_interval_examples",
+        "translation": "Beispiele: 5s, 30s, 1m, 5m"
+    },
+    {
+        "id": "cli_help_description",
+        "translation": "Diese Hilfe anzeigen"
+    },
+    {
+        "id": "cli_examples",
+        "translation": "BEISPIELE"
+    },
+    {
+        "id": "cli_example_1",
+        "translation": "Einzelbericht in Markdown nach stdout (Französisch)"
+    },
+    {
+        "id": "cli_example_2",
+        "translation": "JSON-Bericht in Englisch in Datei"
+    },
+    {
+        "id": "cli_example_3",
+        "translation": "Echtzeitüberwachung alle 10 Sekunden (Spanisch)"
+    },
+    {
+        "id": "cli_example_4",
+        "translation": "Echtzeitüberwachung in Datei (Deutsch)"
+    },
+    {
+        "id": "cli_dsn_required",
+        "translation": "Der Parameter -dsn ist erforderlich"
+    },
+    {
+        "id": "cli_invalid_format",
+        "translation": "Ungültiges Format: %s. Unterstützte Formate: markdown, json, text"
+    },
+    {
+        "id": "cli_invalid_language",
+        "translation": "Ungültige Sprache: %s. Unterstützte Sprachen: fr, en, es, de"
+    },
+    {
+        "id": "cli_db_connection_error",
+        "translation": "Datenbankverbindungsfehler: %v"
+    },
+    {
+        "id": "cli_formatter_error",
+        "translation": "Fehler beim Erstellen des Formatters: %v"
+    },
+    {
+        "id": "cli_generating_report",
+        "translation": "Generiere Sperren-Analysebericht..."
+    },
+    {
+        "id": "cli_report_generation_error",
+        "translation": "Fehler beim Generieren des Berichts: %v"
+    },
+    {
+        "id": "cli_report_writing_error",
+        "translation": "Fehler beim Schreiben des Berichts: %v"
+    },
+    {
+        "id": "cli_report_generated",
+        "translation": "Bericht generiert"
+    },
+    {
+        "id": "cli_realtime_monitoring",
+        "translation": "Echtzeitüberwachung von Sperren (Intervall: %s)"
+    },
+    {
+        "id": "cli_output",
+        "translation": "Ausgabe"
+    },
+    {
+        "id": "cli_press_ctrl_c",
+        "translation": "Drücken Sie Strg+C zum Beenden"
+    },
+    {
+        "id": "cli_analysis",
+        "translation": "Analyse"
+    },
+    {
+        "id": "cli_monitoring_stopped",
+        "translation": "Überwachung vom Benutzer gestoppt"
+    },
+    {
+        "id": "table_pid",
+        "translation": "PID"
+    },
+    {
+        "id": "table_mode",
+        "translation": "Modus"
+    },
+    {
+        "id": "table_granted",
+        "translation": "Gewährt"
+    },
+    {
+        "id": "table_type",
+        "translation": "Typ"
+    },
+    {
+        "id": "table_object",
+        "translation": "Objekt"
+    },
+    {
+        "id": "table_page",
+        "translation": "Seite"
+    },
+    {
+        "id": "table_tuple",
+        "translation": "Tupel"
+    },
+    {
+        "id": "table_duration",
+        "translation": "Dauer"
+    },
+    {
+        "id": "table_query",
+        "translation": "Abfrage"
+    },
+    {
+        "id": "table_metric",
+        "translation": "Metrik"
+    },
+    {
+        "id": "table_value",
+        "translation": "Wert"
+    }
+]

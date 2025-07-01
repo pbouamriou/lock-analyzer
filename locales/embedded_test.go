@@ -25,6 +25,8 @@ func TestListLocaleFiles(t *testing.T) {
 	expectedFiles := map[string]bool{
 		"en.json": false,
 		"fr.json": false,
+		"es.json": false,
+		"de.json": false,
 	}
 
 	for _, file := range files {
@@ -59,6 +61,26 @@ func TestGetLocaleFile(t *testing.T) {
 
 	if len(content) == 0 {
 		t.Fatal("French locale file is empty")
+	}
+
+	// Test reading Spanish file
+	content, err = GetLocaleFile("es.json")
+	if err != nil {
+		t.Fatalf("GetLocaleFile('es.json') failed: %v", err)
+	}
+
+	if len(content) == 0 {
+		t.Fatal("Spanish locale file is empty")
+	}
+
+	// Test reading German file
+	content, err = GetLocaleFile("de.json")
+	if err != nil {
+		t.Fatalf("GetLocaleFile('de.json') failed: %v", err)
+	}
+
+	if len(content) == 0 {
+		t.Fatal("German locale file is empty")
 	}
 
 	// Test reading non-existent file

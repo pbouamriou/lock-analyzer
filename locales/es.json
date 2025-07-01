@@ -1,0 +1,310 @@
+[
+  {
+    "id": "report_title",
+    "translation": "INFORME DE ANÁLISIS DE BLOQUEOS POSTGRESQL"
+  },
+  {
+    "id": "generated_at",
+    "translation": "Generado el"
+  },
+  {
+    "id": "summary_title",
+    "translation": "RESUMEN EJECUTIVO"
+  },
+  {
+    "id": "total_locks",
+    "translation": "Total de bloqueos activos"
+  },
+  {
+    "id": "blocked_transactions",
+    "translation": "Transacciones bloqueadas"
+  },
+  {
+    "id": "long_transactions",
+    "translation": "Transacciones largas"
+  },
+  {
+    "id": "deadlocks_detected",
+    "translation": "Interbloqueos detectados"
+  },
+  {
+    "id": "object_conflicts",
+    "translation": "Conflictos de objetos"
+  },
+  {
+    "id": "critical_issues",
+    "translation": "Problemas críticos"
+  },
+  {
+    "id": "warnings",
+    "translation": "Advertencias"
+  },
+  {
+    "id": "recommendations",
+    "translation": "Recomendaciones"
+  },
+  {
+    "id": "active_locks",
+    "translation": "BLOQUEOS ACTIVOS"
+  },
+  {
+    "id": "blocked_transactions_section",
+    "translation": "TRANSACCIONES BLOQUEADAS"
+  },
+  {
+    "id": "long_transactions_section",
+    "translation": "TRANSACCIONES LARGAS"
+  },
+  {
+    "id": "improvement_suggestions",
+    "translation": "SUGERENCIAS DE MEJORA"
+  },
+  {
+    "id": "timeout_suggestion",
+    "translation": "Considerar agregar timeouts en transacciones largas"
+  },
+  {
+    "id": "split_transaction_suggestion",
+    "translation": "Dividir transacciones largas en transacciones más pequeñas"
+  },
+  {
+    "id": "optimize_indexes_suggestion",
+    "translation": "Optimizar índices para reducir tiempos de bloqueo"
+  },
+  {
+    "id": "review_queries_suggestion",
+    "translation": "Revisar consultas para minimizar conflictos"
+  },
+  {
+    "id": "lock_info_format",
+    "translation": "PID: {{.arg1}}, Modo: {{.arg2}}, Concedido: {{.arg3}}, Tipo: {{.arg4}}, Objeto: {{.arg5}}"
+  },
+  {
+    "id": "blocked_transaction_format",
+    "translation": "PID: {{.arg1}}, Duración: {{.arg2}}, Consulta: {{.arg3}}"
+  },
+  {
+    "id": "long_transaction_format",
+    "translation": "PID: {{.arg1}}, Duración: {{.arg2}}, Consulta: {{.arg3}}"
+  },
+  {
+    "id": "object_conflict_format",
+    "translation": "Objeto: {{.arg1}}, PIDs: {{.arg2}}"
+  },
+  {
+    "id": "index_info_format",
+    "translation": "Índice: {{.arg1}}, Tabla: {{.arg2}}, Tamaño: {{.arg3}}"
+  },
+  {
+    "id": "deadlock_info_format",
+    "translation": "Conflicto entre PID {{.arg1}} y PID {{.arg2}} en {{.arg3}}"
+  },
+  {
+    "id": "no_locks_detected",
+    "translation": "No se detectaron bloqueos"
+  },
+  {
+    "id": "no_blocked_transactions",
+    "translation": "No hay transacciones bloqueadas"
+  },
+  {
+    "id": "no_long_transactions",
+    "translation": "No hay transacciones largas"
+  },
+  {
+    "id": "no_object_conflicts",
+    "translation": "No hay conflictos de objetos"
+  },
+  {
+    "id": "no_deadlocks",
+    "translation": "No se detectaron interbloqueos"
+  },
+  {
+    "id": "no_indexes",
+    "translation": "No se analizaron índices"
+  },
+  {
+    "id": "report_footer",
+    "translation": "Informe generado automáticamente por LockAnalyzer"
+  },
+  {
+    "id": "cli_tool_title",
+    "translation": "LockAnalyzer - Herramienta de análisis de bloqueos PostgreSQL"
+  },
+  {
+    "id": "cli_usage",
+    "translation": "USO"
+  },
+  {
+    "id": "cli_required_parameters",
+    "translation": "PARÁMETROS OBLIGATORIOS"
+  },
+  {
+    "id": "cli_dsn_description",
+    "translation": "DSN de conexión PostgreSQL"
+  },
+  {
+    "id": "cli_dsn_example",
+    "translation": "Ejemplo: postgres://user:pass@localhost:5432/db"
+  },
+  {
+    "id": "cli_options",
+    "translation": "OPCIONES"
+  },
+  {
+    "id": "cli_format_description",
+    "translation": "Formato de salida (predeterminado: markdown)"
+  },
+  {
+    "id": "cli_format_values",
+    "translation": "Valores: markdown, json, text"
+  },
+  {
+    "id": "cli_lang_description",
+    "translation": "Idioma del informe (predeterminado: fr)"
+  },
+  {
+    "id": "cli_lang_values",
+    "translation": "Valores: fr, en, es, de"
+  },
+  {
+    "id": "cli_output_description",
+    "translation": "Archivo de salida (predeterminado: stdout)"
+  },
+  {
+    "id": "cli_output_use",
+    "translation": "Usar 'stdout' para mostrar en pantalla"
+  },
+  {
+    "id": "cli_interval_description",
+    "translation": "Monitoreo en tiempo real"
+  },
+  {
+    "id": "cli_interval_examples",
+    "translation": "Ejemplos: 5s, 30s, 1m, 5m"
+  },
+  {
+    "id": "cli_help_description",
+    "translation": "Mostrar esta ayuda"
+  },
+  {
+    "id": "cli_examples",
+    "translation": "EJEMPLOS"
+  },
+  {
+    "id": "cli_example_1",
+    "translation": "Informe único en Markdown a stdout (Francés)"
+  },
+  {
+    "id": "cli_example_2",
+    "translation": "Informe JSON en Inglés a archivo"
+  },
+  {
+    "id": "cli_example_3",
+    "translation": "Monitoreo en tiempo real cada 10 segundos (Español)"
+  },
+  {
+    "id": "cli_example_4",
+    "translation": "Monitoreo en tiempo real a archivo (Alemán)"
+  },
+  {
+    "id": "cli_dsn_required",
+    "translation": "El parámetro -dsn es obligatorio"
+  },
+  {
+    "id": "cli_invalid_format",
+    "translation": "Formato inválido: %s. Formatos soportados: markdown, json, text"
+  },
+  {
+    "id": "cli_invalid_language",
+    "translation": "Idioma inválido: %s. Idiomas soportados: fr, en, es, de"
+  },
+  {
+    "id": "cli_db_connection_error",
+    "translation": "Error de conexión a la base de datos: %v"
+  },
+  {
+    "id": "cli_formatter_error",
+    "translation": "Error al crear el formateador: %v"
+  },
+  {
+    "id": "cli_generating_report",
+    "translation": "Generando informe de análisis de bloqueos..."
+  },
+  {
+    "id": "cli_report_generation_error",
+    "translation": "Error al generar el informe: %v"
+  },
+  {
+    "id": "cli_report_writing_error",
+    "translation": "Error al escribir el informe: %v"
+  },
+  {
+    "id": "cli_report_generated",
+    "translation": "Informe generado"
+  },
+  {
+    "id": "cli_realtime_monitoring",
+    "translation": "Monitoreo en tiempo real de bloqueos (intervalo: %s)"
+  },
+  {
+    "id": "cli_output",
+    "translation": "Salida"
+  },
+  {
+    "id": "cli_press_ctrl_c",
+    "translation": "Presione Ctrl+C para detener"
+  },
+  {
+    "id": "cli_analysis",
+    "translation": "Análisis"
+  },
+  {
+    "id": "cli_monitoring_stopped",
+    "translation": "Monitoreo detenido por el usuario"
+  },
+  {
+    "id": "table_pid",
+    "translation": "PID"
+  },
+  {
+    "id": "table_mode",
+    "translation": "Modo"
+  },
+  {
+    "id": "table_granted",
+    "translation": "Concedido"
+  },
+  {
+    "id": "table_type",
+    "translation": "Tipo"
+  },
+  {
+    "id": "table_object",
+    "translation": "Objeto"
+  },
+  {
+    "id": "table_page",
+    "translation": "Página"
+  },
+  {
+    "id": "table_tuple",
+    "translation": "Tupla"
+  },
+  {
+    "id": "table_duration",
+    "translation": "Duración"
+  },
+  {
+    "id": "table_query",
+    "translation": "Consulta"
+  },
+  {
+    "id": "table_metric",
+    "translation": "Métrica"
+  },
+  {
+    "id": "table_value",
+    "translation": "Valor"
+  }
+] 
