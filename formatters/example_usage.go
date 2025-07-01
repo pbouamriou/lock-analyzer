@@ -12,9 +12,9 @@ import (
 // ExampleUsage montre comment utiliser la nouvelle architecture des formatters
 func ExampleUsage(db *bun.DB) {
 	// Créer les formatters
-	textFormatter := NewTextFormatter()
-	jsonFormatter := NewJSONFormatter()
-	markdownFormatter := NewMarkdownFormatter()
+	textFormatter := NewTextFormatter("")
+	jsonFormatter := NewJSONFormatter("")
+	markdownFormatter := NewMarkdownFormatter("")
 
 	// Exemple 1: Générer et afficher un rapport en Markdown
 	fmt.Println("=== Affichage du rapport en Markdown ===")

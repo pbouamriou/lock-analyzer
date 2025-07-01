@@ -21,6 +21,7 @@ func main() {
 	var (
 		dsn      = flag.String("dsn", "", "DSN de connexion PostgreSQL (ex: postgres://user:pass@localhost:5432/db)")
 		format   = flag.String("format", "markdown", "Format de sortie: markdown, json, text")
+		lang     = flag.String("lang", "fr", "Langue du rapport: fr, en, es, de")
 		output   = flag.String("output", "stdout", "Fichier de sortie ou 'stdout' pour l'affichage")
 		interval = flag.Duration("interval", 0, "Intervalle de surveillance en temps réel (ex: 5s, 1m)")
 		help     = flag.Bool("help", false, "Afficher l'aide")
@@ -44,6 +45,12 @@ func main() {
 		log.Fatalf("Format invalide: %s. Formats supportés: markdown, json, text", *format)
 	}
 
+	// Validation de la langue
+	validLangs := map[string]bool{"fr": true, "en": true, "es": true, "de": true}
+	if !validLangs[*lang] {
+		log.Fatalf("Langue invalide: %s. Langues supportées: fr, en, es, de", *lang)
+	}
+
 	// Connexion à la base de données
 	db, err := connectDB(*dsn)
 	if err != nil {
@@ -52,7 +59,10 @@ func main() {
 	defer db.Close()
 
 	// Création du formatter
-	formatter := createFormatter(*format)
+	formatter, err := formatters.NewFormatter(*format, *lang)
+	if err != nil {
+		log.Fatalf("Erreur lors de la création du formatter: %v", err)
+	}
 
 	// Mode surveillance en temps réel
 	if *interval > 0 {
@@ -80,6 +90,10 @@ OPTIONS:
         Format de sortie (défaut: markdown)
         Valeurs: markdown, json, text
 
+  -lang string
+        Langue du rapport (défaut: fr)
+        Valeurs: fr, en, es, de
+
   -output string
         Fichier de sortie (défaut: stdout)
         Utiliser 'stdout' pour l'affichage à l'écran
@@ -92,17 +106,17 @@ OPTIONS:
         Afficher cette aide
 
 EXEMPLES:
-  # Rapport unique en Markdown vers stdout
+  # Rapport unique en Markdown vers stdout (français)
   lockanalyzer -dsn="postgres://user@localhost:5432/testdb" -format=markdown
 
-  # Rapport JSON vers fichier
-  lockanalyzer -dsn="postgres://user@localhost:5432/testdb" -format=json -output=report.json
+  # Rapport JSON en anglais vers fichier
+  lockanalyzer -dsn="postgres://user@localhost:5432/testdb" -format=json -lang=en -output=report.json
 
-  # Surveillance en temps réel toutes les 10 secondes
-  lockanalyzer -dsn="postgres://user@localhost:5432/testdb" -interval=10s
+  # Surveillance en temps réel toutes les 10 secondes (espagnol)
+  lockanalyzer -dsn="postgres://user@localhost:5432/testdb" -interval=10s -lang=es
 
-  # Surveillance en temps réel vers fichier
-  lockanalyzer -dsn="postgres://user@localhost:5432/testdb" -interval=30s -output=monitoring.txt
+  # Surveillance en temps réel vers fichier (allemand)
+  lockanalyzer -dsn="postgres://user@localhost:5432/testdb" -interval=30s -lang=de -output=monitoring.txt
 `)
 }
 
@@ -119,20 +133,6 @@ func connectDB(dsn string) (*bun.DB, error) {
 
 	db := bun.NewDB(sqldb, pgdialect.New())
 	return db, nil
-}
-
-func createFormatter(format string) formatters.LockReportFormatter {
-	switch format {
-	case "markdown":
-		return formatters.NewMarkdownFormatter()
-	case "json":
-		return formatters.NewJSONFormatter()
-	case "text":
-		return formatters.NewTextFormatter()
-	default:
-		log.Fatalf("Format non supporté: %s", format)
-		return nil
-	}
 }
 
 func generateSingleReport(db *bun.DB, formatter formatters.LockReportFormatter, output string) {

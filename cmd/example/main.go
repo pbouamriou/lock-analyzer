@@ -274,7 +274,7 @@ func testConcurrentTransactions(db *bun.DB, ctx1, ctx2 context.Context, model Mo
 
 	// Afficher les locks avant T2
 	fmt.Println("\n--- État des locks avant T2 ---")
-	markdownFormatter := formatters.NewMarkdownFormatter()
+	markdownFormatter := formatters.NewMarkdownFormatter("")
 	if err := formatters.GenerateAndDisplayReport(db, markdownFormatter); err != nil {
 		log.Printf("Erreur lors de l'affichage du rapport: %v", err)
 	}
@@ -307,7 +307,7 @@ func testConcurrentTransactions(db *bun.DB, ctx1, ctx2 context.Context, model Mo
 			case <-ticker.C:
 				fmt.Println("\n--- Analyse des locks en temps réel ---")
 				// Afficher le rapport en format markdown
-				markdownFormatter := formatters.NewMarkdownFormatter()
+				markdownFormatter := formatters.NewMarkdownFormatter("")
 				if err := formatters.GenerateAndDisplayReport(db, markdownFormatter); err != nil {
 					fmt.Printf("Erreur lors de l'affichage du rapport: %v\n", err)
 				}
@@ -331,7 +331,7 @@ func testConcurrentTransactions(db *bun.DB, ctx1, ctx2 context.Context, model Mo
 
 	// Afficher les locks après T2
 	fmt.Println("\n--- État des locks après T2 ---")
-	postMarkdownFormatter := formatters.NewMarkdownFormatter()
+	postMarkdownFormatter := formatters.NewMarkdownFormatter("")
 	if err := formatters.GenerateAndDisplayReport(db, postMarkdownFormatter); err != nil {
 		log.Printf("Erreur lors de l'affichage du rapport: %v", err)
 	}
@@ -353,9 +353,9 @@ func testConcurrentTransactions(db *bun.DB, ctx1, ctx2 context.Context, model Mo
 	fmt.Println("\n--- Génération du rapport d'analyse ---")
 
 	// Générer les rapports finaux
-	finalTextFormatter := formatters.NewTextFormatter()
-	finalJSONFormatter := formatters.NewJSONFormatter()
-	finalMarkdownFormatter := formatters.NewMarkdownFormatter()
+	finalTextFormatter := formatters.NewTextFormatter("")
+	finalJSONFormatter := formatters.NewJSONFormatter("")
+	finalMarkdownFormatter := formatters.NewMarkdownFormatter("")
 
 	// Générer le rapport texte
 	if err := formatters.GenerateAndWriteReport(db, finalTextFormatter, fmt.Sprintf("lock_report_%s.txt", fileType)); err != nil {

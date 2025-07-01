@@ -1,0 +1,130 @@
+[
+  {
+    "id": "report_title",
+    "translation": "RAPPORT D'ANALYSE DES LOCKS POSTGRESQL"
+  },
+  {
+    "id": "generated_at",
+    "translation": "Généré le"
+  },
+  {
+    "id": "summary_title",
+    "translation": "RÉSUMÉ EXÉCUTIF"
+  },
+  {
+    "id": "total_locks",
+    "translation": "Total locks actifs"
+  },
+  {
+    "id": "blocked_transactions",
+    "translation": "Transactions bloquées"
+  },
+  {
+    "id": "long_transactions",
+    "translation": "Transactions longues"
+  },
+  {
+    "id": "deadlocks_detected",
+    "translation": "Deadlocks détectés"
+  },
+  {
+    "id": "object_conflicts",
+    "translation": "Conflits d'objets"
+  },
+  {
+    "id": "critical_issues",
+    "translation": "Problèmes critiques"
+  },
+  {
+    "id": "warnings",
+    "translation": "Avertissements"
+  },
+  {
+    "id": "recommendations",
+    "translation": "Recommandations"
+  },
+  {
+    "id": "active_locks",
+    "translation": "LOCKS ACTIFS"
+  },
+  {
+    "id": "blocked_transactions_section",
+    "translation": "TRANSACTIONS BLOQUÉES"
+  },
+  {
+    "id": "long_transactions_section",
+    "translation": "TRANSACTIONS LONGUES"
+  },
+  {
+    "id": "improvement_suggestions",
+    "translation": "SUGGESTIONS D'AMÉLIORATION"
+  },
+  {
+    "id": "timeout_suggestion",
+    "translation": "Considérer l'ajout de timeouts sur les transactions longues"
+  },
+  {
+    "id": "split_transaction_suggestion",
+    "translation": "Diviser les transactions longues en transactions plus petites"
+  },
+  {
+    "id": "optimize_indexes_suggestion",
+    "translation": "Optimiser les index pour réduire les temps de verrouillage"
+  },
+  {
+    "id": "review_queries_suggestion",
+    "translation": "Réviser les requêtes pour minimiser les conflits"
+  },
+  {
+    "id": "lock_info_format",
+    "translation": "PID: {{.arg1}}, Mode: {{.arg2}}, Granted: {{.arg3}}, Type: {{.arg4}}, Object: {{.arg5}}"
+  },
+  {
+    "id": "blocked_transaction_format",
+    "translation": "PID: {{.arg1}}, Durée: {{.arg2}}, Query: {{.arg3}}"
+  },
+  {
+    "id": "long_transaction_format",
+    "translation": "PID: {{.arg1}}, Durée: {{.arg2}}, Query: {{.arg3}}"
+  },
+  {
+    "id": "object_conflict_format",
+    "translation": "Objet: {{.arg1}}, PIDs: {{.arg2}}"
+  },
+  {
+    "id": "index_info_format",
+    "translation": "Index: {{.arg1}}, Table: {{.arg2}}, Taille: {{.arg3}}"
+  },
+  {
+    "id": "deadlock_info_format",
+    "translation": "Conflit entre PID {{.arg1}} et PID {{.arg2}} sur {{.arg3}}"
+  },
+  {
+    "id": "no_locks_detected",
+    "translation": "Aucun lock détecté"
+  },
+  {
+    "id": "no_blocked_transactions",
+    "translation": "Aucune transaction bloquée"
+  },
+  {
+    "id": "no_long_transactions",
+    "translation": "Aucune transaction longue"
+  },
+  {
+    "id": "no_object_conflicts",
+    "translation": "Aucun conflit d'objet"
+  },
+  {
+    "id": "no_deadlocks",
+    "translation": "Aucun deadlock détecté"
+  },
+  {
+    "id": "no_indexes",
+    "translation": "Aucun index analysé"
+  },
+  {
+    "id": "report_footer",
+    "translation": "Rapport généré automatiquement par LockAnalyzer"
+  }
+] 

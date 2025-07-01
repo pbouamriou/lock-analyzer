@@ -7,74 +7,92 @@ import (
 	"strings"
 	"time"
 
+	"concurrent-db/i18n"
 	"concurrent-db/lockanalyzer"
 )
 
-// FormatText formate les données en texte et les écrit vers un Writer
-func FormatText(data *lockanalyzer.ReportData, output io.Writer) error {
+// TextFormatter formate les données en texte avec support multilingue
+type TextFormatter struct {
+	translator *i18n.Translator
+}
+
+// NewTextFormatter crée un nouveau formatter texte pour la langue spécifiée
+func NewTextFormatter(lang string) *TextFormatter {
+	return &TextFormatter{
+		translator: i18n.NewTranslator(lang),
+	}
+}
+
+// Format implémente l'interface LockReportFormatter
+func (f *TextFormatter) Format(data *lockanalyzer.ReportData, output io.Writer) error {
+	t := f.translator
 	var content strings.Builder
 
 	// En-tête
 	content.WriteString(strings.Repeat("=", 80) + "\n")
-	content.WriteString("RAPPORT D'ANALYSE DES LOCKS POSTGRESQL\n")
+	content.WriteString(t.T("report_title") + "\n")
 	content.WriteString(strings.Repeat("=", 80) + "\n")
-	content.WriteString(fmt.Sprintf("Généré le: %s\n\n", data.Timestamp.Format("2006-01-02 15:04:05")))
+	content.WriteString(fmt.Sprintf("%s: %s\n\n", t.T("generated_at"), data.Timestamp.Format("2006-01-02 15:04:05")))
 
 	// Résumé
-	content.WriteString("RÉSUMÉ EXÉCUTIF\n")
+	content.WriteString(t.T("summary_title") + "\n")
 	content.WriteString(strings.Repeat("-", 40) + "\n")
-	content.WriteString(fmt.Sprintf("Total locks actifs: %d\n", data.Summary.TotalLocks))
-	content.WriteString(fmt.Sprintf("Transactions bloquées: %d\n", data.Summary.BlockedTxns))
-	content.WriteString(fmt.Sprintf("Transactions longues: %d\n", data.Summary.LongTxns))
-	content.WriteString(fmt.Sprintf("Deadlocks détectés: %d\n", data.Summary.Deadlocks))
-	content.WriteString(fmt.Sprintf("Conflits d'objets: %d\n", data.Summary.ObjectConflicts))
-	content.WriteString(fmt.Sprintf("Problèmes critiques: %d\n", data.Summary.CriticalIssues))
-	content.WriteString(fmt.Sprintf("Avertissements: %d\n", data.Summary.Warnings))
-	content.WriteString(fmt.Sprintf("Recommandations: %d\n\n", data.Summary.Recommendations))
+	content.WriteString(fmt.Sprintf("%s: %d\n", t.T("total_locks"), data.Summary.TotalLocks))
+	content.WriteString(fmt.Sprintf("%s: %d\n", t.T("blocked_transactions"), data.Summary.BlockedTxns))
+	content.WriteString(fmt.Sprintf("%s: %d\n", t.T("long_transactions"), data.Summary.LongTxns))
+	content.WriteString(fmt.Sprintf("%s: %d\n", t.T("deadlocks_detected"), data.Summary.Deadlocks))
+	content.WriteString(fmt.Sprintf("%s: %d\n", t.T("object_conflicts"), data.Summary.ObjectConflicts))
+	content.WriteString(fmt.Sprintf("%s: %d\n", t.T("critical_issues"), data.Summary.CriticalIssues))
+	content.WriteString(fmt.Sprintf("%s: %d\n", t.T("warnings"), data.Summary.Warnings))
+	content.WriteString(fmt.Sprintf("%s: %d\n\n", t.T("recommendations"), data.Summary.Recommendations))
 
 	// Locks actifs
 	if len(data.Locks) > 0 {
-		content.WriteString("LOCKS ACTIFS\n")
+		content.WriteString(t.T("active_locks") + "\n")
 		content.WriteString(strings.Repeat("-", 40) + "\n")
 		for _, lock := range data.Locks {
-			content.WriteString(fmt.Sprintf("PID: %d, Mode: %s, Granted: %t, Type: %s",
-				lock.PID, lock.Mode, lock.Granted, lock.Type))
-			if lock.Object != "" {
-				content.WriteString(fmt.Sprintf(", Object: %s", lock.Object))
-			}
-			if lock.Page != "" {
-				content.WriteString(fmt.Sprintf(", Page: %s, Tuple: %s", lock.Page, lock.Tuple))
-			}
-			content.WriteString("\n")
+			content.WriteString(t.TWithData("lock_info_format", map[string]interface{}{
+				"arg1": lock.PID,
+				"arg2": lock.Mode,
+				"arg3": lock.Granted,
+				"arg4": lock.Type,
+				"arg5": lock.Object,
+			}) + "\n")
 		}
 		content.WriteString("\n")
 	}
 
 	// Transactions bloquées
 	if len(data.BlockedTxns) > 0 {
-		content.WriteString("TRANSACTIONS BLOQUÉES\n")
+		content.WriteString(t.T("blocked_transactions_section") + "\n")
 		content.WriteString(strings.Repeat("-", 40) + "\n")
 		for _, txn := range data.BlockedTxns {
-			content.WriteString(fmt.Sprintf("PID: %s, Durée: %s, Query: %s\n",
-				txn.PID, txn.Duration, txn.Query))
+			content.WriteString(t.TWithData("blocked_transaction_format", map[string]interface{}{
+				"arg1": txn.PID,
+				"arg2": txn.Duration,
+				"arg3": txn.Query,
+			}) + "\n")
 		}
 		content.WriteString("\n")
 	}
 
 	// Transactions longues
 	if len(data.LongTxns) > 0 {
-		content.WriteString("TRANSACTIONS LONGUES\n")
+		content.WriteString(t.T("long_transactions_section") + "\n")
 		content.WriteString(strings.Repeat("-", 40) + "\n")
 		for _, txn := range data.LongTxns {
-			content.WriteString(fmt.Sprintf("PID: %s, Durée: %s, Query: %s\n",
-				txn.PID, txn.Duration, txn.Query))
+			content.WriteString(t.TWithData("long_transaction_format", map[string]interface{}{
+				"arg1": txn.PID,
+				"arg2": txn.Duration,
+				"arg3": txn.Query,
+			}) + "\n")
 		}
 		content.WriteString("\n")
 	}
 
 	// Suggestions
 	if len(data.Suggestions) > 0 {
-		content.WriteString("SUGGESTIONS D'AMÉLIORATION\n")
+		content.WriteString(t.T("improvement_suggestions") + "\n")
 		content.WriteString(strings.Repeat("-", 40) + "\n")
 		for i, suggestion := range data.Suggestions {
 			content.WriteString(fmt.Sprintf("%d. %s\n", i+1, suggestion))
@@ -82,11 +100,25 @@ func FormatText(data *lockanalyzer.ReportData, output io.Writer) error {
 		content.WriteString("\n")
 	}
 
+	// Pied de page
+	content.WriteString(t.T("report_footer") + "\n")
+
 	_, err := output.Write([]byte(content.String()))
 	return err
 }
 
-// WriteTextFile écrit le rapport texte dans un fichier
+// GetFileExtension retourne l'extension de fichier pour ce formatter
+func (f *TextFormatter) GetFileExtension() string {
+	return "txt"
+}
+
+// FormatText formate les données en texte et les écrit vers un Writer (version legacy)
+func FormatText(data *lockanalyzer.ReportData, output io.Writer) error {
+	formatter := NewTextFormatter("fr") // Français par défaut pour la compatibilité
+	return formatter.Format(data, output)
+}
+
+// WriteTextFile écrit le rapport texte dans un fichier (version legacy)
 func WriteTextFile(data *lockanalyzer.ReportData, filename string) error {
 	if filename == "" {
 		filename = fmt.Sprintf("lock_analysis_%s.txt", time.Now().Format("20060102_150405"))

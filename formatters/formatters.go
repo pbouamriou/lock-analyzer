@@ -5,6 +5,7 @@ import (
 	"io"
 	"os"
 
+	"concurrent-db/i18n"
 	"concurrent-db/lockanalyzer"
 
 	"github.com/uptrace/bun"
@@ -14,6 +15,35 @@ import (
 type LockReportFormatter interface {
 	Format(data *lockanalyzer.ReportData, output io.Writer) error
 	GetFileExtension() string
+}
+
+// NewFormatter crée un nouveau formatter pour le format et la langue spécifiés
+func NewFormatter(format, lang string) (LockReportFormatter, error) {
+	// Valider la langue
+	if !i18n.IsValidLanguage(lang) {
+		lang = "fr" // Français par défaut
+	}
+
+	switch format {
+	case "text", "txt":
+		return NewTextFormatter(lang), nil
+	case "markdown", "md":
+		return NewMarkdownFormatter(lang), nil
+	case "json":
+		return NewJSONFormatter(lang), nil
+	default:
+		return nil, fmt.Errorf("format non supporté: %s", format)
+	}
+}
+
+// GetAvailableFormats retourne la liste des formats disponibles
+func GetAvailableFormats() []string {
+	return []string{"text", "markdown", "json"}
+}
+
+// GetAvailableLanguages retourne la liste des langues disponibles
+func GetAvailableLanguages() []string {
+	return i18n.GetAvailableLanguages()
 }
 
 // GenerateAndWriteReport génère un rapport et l'écrit en utilisant le formatter spécifié
