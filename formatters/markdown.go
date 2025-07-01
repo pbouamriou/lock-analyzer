@@ -34,7 +34,7 @@ func (f *MarkdownFormatter) Format(data *lockanalyzer.ReportData, output io.Writ
 
 	// Summary
 	content.WriteString(fmt.Sprintf("## 📊 %s\n\n", t.T("summary_title")))
-	content.WriteString("| Metric | Value |\n")
+	content.WriteString(fmt.Sprintf("| %s | %s |\n", t.T("table_metric"), t.T("table_value")))
 	content.WriteString("|--------|-------|\n")
 	content.WriteString(fmt.Sprintf("| 🔒 %s | %d |\n", t.T("total_locks"), data.Summary.TotalLocks))
 	content.WriteString(fmt.Sprintf("| ⏳ %s | %d |\n", t.T("blocked_transactions"), data.Summary.BlockedTxns))
@@ -48,7 +48,8 @@ func (f *MarkdownFormatter) Format(data *lockanalyzer.ReportData, output io.Writ
 	// Active locks
 	if len(data.Locks) > 0 {
 		content.WriteString(fmt.Sprintf("## 🔒 %s\n\n", t.T("active_locks")))
-		content.WriteString("| PID | Mode | Granted | Type | Object | Page | Tuple |\n")
+		content.WriteString(fmt.Sprintf("| %s | %s | %s | %s | %s | %s | %s |\n",
+			t.T("table_pid"), t.T("table_mode"), t.T("table_granted"), t.T("table_type"), t.T("table_object"), t.T("table_page"), t.T("table_tuple")))
 		content.WriteString("|-----|------|---------|------|--------|------|-------|\n")
 		for _, lock := range data.Locks {
 			content.WriteString(fmt.Sprintf("| %d | %s | %t | %s | %s | %s | %s |\n",
@@ -60,7 +61,7 @@ func (f *MarkdownFormatter) Format(data *lockanalyzer.ReportData, output io.Writ
 	// Blocked transactions
 	if len(data.BlockedTxns) > 0 {
 		content.WriteString(fmt.Sprintf("## ⏳ %s\n\n", t.T("blocked_transactions_section")))
-		content.WriteString("| PID | Duration | Query |\n")
+		content.WriteString(fmt.Sprintf("| %s | %s | %s |\n", t.T("table_pid"), t.T("table_duration"), t.T("table_query")))
 		content.WriteString("|-----|----------|-------|\n")
 		for _, txn := range data.BlockedTxns {
 			content.WriteString(fmt.Sprintf("| %s | %s | `%s` |\n", txn.PID, txn.Duration, txn.Query))
@@ -71,7 +72,7 @@ func (f *MarkdownFormatter) Format(data *lockanalyzer.ReportData, output io.Writ
 	// Long transactions
 	if len(data.LongTxns) > 0 {
 		content.WriteString(fmt.Sprintf("## ⏰ %s\n\n", t.T("long_transactions_section")))
-		content.WriteString("| PID | Duration | Query |\n")
+		content.WriteString(fmt.Sprintf("| %s | %s | %s |\n", t.T("table_pid"), t.T("table_duration"), t.T("table_query")))
 		content.WriteString("|-----|----------|-------|\n")
 		for _, txn := range data.LongTxns {
 			content.WriteString(fmt.Sprintf("| %s | %s | `%s` |\n", txn.PID, txn.Duration, txn.Query))

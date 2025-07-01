@@ -57,17 +57,19 @@ func TestMarkdownFormatter(t *testing.T) {
 		t.Fatalf("Error during formatting: %v", err)
 	}
 
-	content := strings.ToLower(buf.String())
-	if !strings.Contains(content, "rapport d'analyse des locks postgresql") {
+	content := buf.String()
+	contentLower := strings.ToLower(content)
+
+	if !strings.Contains(contentLower, "rapport d'analyse des locks postgresql") {
 		t.Error("Markdown report must contain main title (case and emoji robust)")
 	}
-	if !strings.Contains(content, "résumé exécutif") {
+	if !strings.Contains(contentLower, "résumé exécutif") {
 		t.Error("Markdown report must contain summary section (case and emoji robust)")
 	}
-	if !strings.Contains(content, "locks actifs") {
+	if !strings.Contains(contentLower, "locks actifs") {
 		t.Error("Markdown report must contain active locks section (case and emoji robust)")
 	}
-	if !strings.Contains(content, "suggestions d'amélioration") {
+	if !strings.Contains(contentLower, "suggestions d'amélioration") {
 		t.Error("Markdown report must contain suggestions section (case and emoji robust)")
 	}
 
@@ -77,6 +79,112 @@ func TestMarkdownFormatter(t *testing.T) {
 	}
 	if !strings.Contains(content, "1") {
 		t.Error("Report must display number of blocked transactions")
+	}
+
+	// Check that table headers are localized
+	if !strings.Contains(content, "Métrique") {
+		t.Error("Table headers must be localized (Métrique)")
+	}
+	if !strings.Contains(content, "Valeur") {
+		t.Error("Table headers must be localized (Valeur)")
+	}
+	if !strings.Contains(content, "PID") {
+		t.Error("Table headers must be localized (PID)")
+	}
+	if !strings.Contains(content, "Mode") {
+		t.Error("Table headers must be localized (Mode)")
+	}
+	if !strings.Contains(content, "Accordé") {
+		t.Error("Table headers must be localized (Accordé)")
+	}
+	if !strings.Contains(content, "Type") {
+		t.Error("Table headers must be localized (Type)")
+	}
+	if !strings.Contains(content, "Objet") {
+		t.Error("Table headers must be localized (Objet)")
+	}
+	if !strings.Contains(content, "Page") {
+		t.Error("Table headers must be localized (Page)")
+	}
+	if !strings.Contains(content, "Requête") {
+		t.Error("Table headers must be localized (Requête)")
+	}
+}
+
+// TestMarkdownFormatterEnglish tests the Markdown formatter in English
+func TestMarkdownFormatterEnglish(t *testing.T) {
+	formatter := NewMarkdownFormatter("en")
+
+	// Create test data
+	data := &lockanalyzer.ReportData{
+		Timestamp: time.Now(),
+		Summary: lockanalyzer.ReportSummary{
+			TotalLocks:      2,
+			BlockedTxns:     1,
+			LongTxns:        1,
+			Deadlocks:       0,
+			ObjectConflicts: 1,
+			CriticalIssues:  1,
+			Warnings:        2,
+			Recommendations: 2,
+		},
+		Locks: []lockanalyzer.LockInfo{
+			{PID: 1, Mode: "ExclusiveLock", Granted: true, Type: "relation", Object: "projects"},
+			{PID: 2, Mode: "ShareLock", Granted: false, Type: "relation", Object: "models"},
+		},
+		BlockedTxns: []lockanalyzer.BlockedTransaction{
+			{PID: "2", Duration: "10s", Query: "SELECT * FROM models"},
+		},
+		LongTxns: []lockanalyzer.LongTransaction{
+			{PID: "1", Duration: "30s", Query: "UPDATE projects SET name = 'test'"},
+		},
+		Suggestions: []string{
+			"Consider adding timeouts on long transactions",
+			"Split long transactions into smaller ones",
+		},
+	}
+
+	var buf bytes.Buffer
+	err := formatter.Format(data, &buf)
+	if err != nil {
+		t.Fatalf("Error during formatting: %v", err)
+	}
+
+	content := strings.ToLower(buf.String())
+
+	// Check that table headers are localized in English
+	if !strings.Contains(content, "metric") {
+		t.Error("Table headers must be localized (Metric)")
+	}
+	if !strings.Contains(content, "value") {
+		t.Error("Table headers must be localized (Value)")
+	}
+	if !strings.Contains(content, "pid") {
+		t.Error("Table headers must be localized (PID)")
+	}
+	if !strings.Contains(content, "mode") {
+		t.Error("Table headers must be localized (Mode)")
+	}
+	if !strings.Contains(content, "granted") {
+		t.Error("Table headers must be localized (Granted)")
+	}
+	if !strings.Contains(content, "type") {
+		t.Error("Table headers must be localized (Type)")
+	}
+	if !strings.Contains(content, "object") {
+		t.Error("Table headers must be localized (Object)")
+	}
+	if !strings.Contains(content, "page") {
+		t.Error("Table headers must be localized (Page)")
+	}
+	if !strings.Contains(content, "tuple") {
+		t.Error("Table headers must be localized (Tuple)")
+	}
+	if !strings.Contains(content, "duration") {
+		t.Error("Table headers must be localized (Duration)")
+	}
+	if !strings.Contains(content, "query") {
+		t.Error("Table headers must be localized (Query)")
 	}
 }
 

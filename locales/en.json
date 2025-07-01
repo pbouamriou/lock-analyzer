@@ -262,5 +262,49 @@
   {
     "id": "cli_monitoring_stopped",
     "translation": "Monitoring stopped by user"
+  },
+  {
+    "id": "table_pid",
+    "translation": "PID"
+  },
+  {
+    "id": "table_mode",
+    "translation": "Mode"
+  },
+  {
+    "id": "table_granted",
+    "translation": "Granted"
+  },
+  {
+    "id": "table_type",
+    "translation": "Type"
+  },
+  {
+    "id": "table_object",
+    "translation": "Object"
+  },
+  {
+    "id": "table_page",
+    "translation": "Page"
+  },
+  {
+    "id": "table_tuple",
+    "translation": "Tuple"
+  },
+  {
+    "id": "table_duration",
+    "translation": "Duration"
+  },
+  {
+    "id": "table_query",
+    "translation": "Query"
+  },
+  {
+    "id": "table_metric",
+    "translation": "Metric"
+  },
+  {
+    "id": "table_value",
+    "translation": "Value"
   }
 ] 
