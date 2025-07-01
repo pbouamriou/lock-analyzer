@@ -3,9 +3,11 @@ package i18n
 import (
 	"encoding/json"
 	"fmt"
+	"io/fs"
 	"os"
-	"path/filepath"
 	"strings"
+
+	"concurrent-db/locales"
 
 	"github.com/nicksnyder/go-i18n/v2/i18n"
 	"golang.org/x/text/language"
@@ -59,36 +61,28 @@ func NewTranslator(lang string) *Translator {
 		chosenLang = "fr"
 	}
 
-	// Load translation files
-	// Try several possible paths for the locales directory
-	possiblePaths := []string{
-		"locales",          // From root directory
-		"../locales",       // From subdirectory
-		"../../locales",    // From sub-subdirectory
-		"../../../locales", // From sub-sub-subdirectory
-	}
-
-	var localesDir string
-	for _, path := range possiblePaths {
-		if _, err := os.Stat(path); err == nil {
-			localesDir = path
-			break
-		}
-	}
-
-	if localesDir != "" {
-		// Load all .json files in the locales directory
-		files, err := filepath.Glob(filepath.Join(localesDir, "*.json"))
+	// Load translation files from embedded filesystem
+	localesFS := locales.GetLocalesFS()
+	if localesFS != nil {
+		// Load all .json files from the embedded filesystem
+		entries, err := fs.ReadDir(localesFS, ".")
 		if err == nil {
-			for _, file := range files {
-				fmt.Printf("Loading translation file: %s\n", file)
-				bundle.MustLoadMessageFile(file)
+			for _, entry := range entries {
+				if !entry.IsDir() && strings.HasSuffix(entry.Name(), ".json") {
+					content, err := fs.ReadFile(localesFS, entry.Name())
+					if err == nil {
+						fmt.Printf("Loading embedded translation file: %s\n", entry.Name())
+						bundle.MustParseMessageFileBytes(content, entry.Name())
+					} else {
+						fmt.Printf("Error reading embedded file %s: %v\n", entry.Name(), err)
+					}
+				}
 			}
 		} else {
-			fmt.Printf("Error searching for translation files: %v\n", err)
+			fmt.Printf("Error reading embedded locales directory: %v\n", err)
 		}
 	} else {
-		fmt.Printf("Locales directory not found in paths: %v\n", possiblePaths)
+		fmt.Printf("Warning: No embedded locales filesystem available\n")
 	}
 
 	localizer := i18n.NewLocalizer(bundle, chosenLang)
