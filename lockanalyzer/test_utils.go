@@ -64,7 +64,10 @@ type TestDB struct {
 
 // setupTestDB configures a test database with fixtures
 func setupTestDB(t *testing.T, fixtureFile string) *TestDB {
-	dsn := "postgres://philippebouamriou@localhost:5432/testdb?sslmode=disable"
+	dsn := os.Getenv("TEST_DATABASE_URL")
+	if dsn == "" {
+		dsn = "postgres://philippebouamriou@localhost:5432/testdb?sslmode=disable"
+	}
 	sqldb, err := sql.Open("postgres", dsn)
 	if err != nil {
 		t.Fatalf("Database connection error: %v", err)
