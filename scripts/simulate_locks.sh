@@ -1,21 +1,21 @@
 #!/bin/bash
 
-# Script pour simuler des locks PostgreSQL
-# Utilise l'application principale pour créer des locks
+# Script to simulate PostgreSQL locks
+# Uses the main application to create locks
 
-echo "🔒 Simulation de locks PostgreSQL"
-echo "=================================="
+echo "🔒 PostgreSQL Lock Simulation"
+echo "============================="
 
-# Vérifier que l'application est compilée
-if [ ! -f "build/lockanalyzer" ]; then
-    echo "❌ L'application n'est pas compilée. Lancez 'make build' d'abord."
+# Check if the application is compiled
+if [ ! -f "build/lockanalyzer-example" ]; then
+    echo "❌ Application is not compiled. Run 'make build' first."
     exit 1
 fi
 
-echo "🚀 Lancement de l'application de test (Ctrl+C pour arrêter)..."
-echo "📊 Utilisez l'outil CLI pour surveiller les locks:"
+echo "🚀 Starting test application (Ctrl+C to stop)..."
+echo "📊 Use the CLI tool to monitor locks:"
 echo "   ./build/lockanalyzer-cli -dsn='postgres://philippebouamriou@localhost:5432/testdb?sslmode=disable' -interval=5s"
 echo ""
 
-# Lancer l'application principale
-./build/lockanalyzer 
+# Launch the example application
+./build/lockanalyzer-example 
