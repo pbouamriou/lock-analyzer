@@ -1,4 +1,6 @@
-./concurrent-db
-./concurrent-db.exe
+concurrent-db
+concurrent-db.exe
+build/
+test_report.*
 .DS_Store
 .idea
