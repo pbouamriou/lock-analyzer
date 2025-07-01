@@ -1,48 +1,58 @@
-- table: projects
+- model: Project
   rows:
-    - id: "550e8400-e29b-41d4-a716-446655440001"
+    - _id: project1
+      id: "550e8400-e29b-41d4-a716-446655440001"
       name: "Test Project 1"
       modified_at: "2024-01-01T10:00:00Z"
-    - id: "550e8400-e29b-41d4-a716-446655440002"
+    - _id: project2
+      id: "550e8400-e29b-41d4-a716-446655440002"
       name: "Test Project 2"
       modified_at: "2024-01-01T11:00:00Z"
 
-- table: models
+- model: Model
   rows:
-    - id: "660e8400-e29b-41d4-a716-446655440001"
-      project_id: "550e8400-e29b-41d4-a716-446655440001"
+    - _id: model1
+      id: "660e8400-e29b-41d4-a716-446655440001"
+      project_id: "{{ $.Project.project1.ID }}"
       state: "active"
-    - id: "660e8400-e29b-41d4-a716-446655440002"
-      project_id: "550e8400-e29b-41d4-a716-446655440001"
+    - _id: model2
+      id: "660e8400-e29b-41d4-a716-446655440002"
+      project_id: "{{ $.Project.project1.ID }}"
       state: "draft"
 
-- table: files
+- model: File
   rows:
-    - id: "770e8400-e29b-41d4-a716-446655440001"
-      project_id: "550e8400-e29b-41d4-a716-446655440001"
+    - _id: file1
+      id: "770e8400-e29b-41d4-a716-446655440001"
+      project_id: "{{ $.Project.project1.ID }}"
       content: "Test content 1"
-    - id: "770e8400-e29b-41d4-a716-446655440002"
-      project_id: "550e8400-e29b-41d4-a716-446655440001"
+    - _id: file2
+      id: "770e8400-e29b-41d4-a716-446655440002"
+      project_id: "{{ $.Project.project1.ID }}"
       content: "Test content 2"
 
-- table: blocks
+- model: Block
   rows:
-    - id: "880e8400-e29b-41d4-a716-446655440001"
-      model_id: "660e8400-e29b-41d4-a716-446655440001"
+    - _id: block1
+      id: "880e8400-e29b-41d4-a716-446655440001"
+      model_id: "{{ $.Model.model1.ID }}"
       type: "STANDARD"
       name: "Standard Block 1"
-    - id: "880e8400-e29b-41d4-a716-446655440002"
-      model_id: "660e8400-e29b-41d4-a716-446655440001"
+    - _id: block2
+      id: "880e8400-e29b-41d4-a716-446655440002"
+      model_id: "{{ $.Model.model1.ID }}"
       type: "GENERATED"
       name: "Generated Block 1"
 
-- table: parameters
+- model: Parameter
   rows:
-    - id: "990e8400-e29b-41d4-a716-446655440001"
-      block_id: "880e8400-e29b-41d4-a716-446655440001"
+    - _id: param1
+      id: "990e8400-e29b-41d4-a716-446655440001"
+      block_id: "{{ $.Block.block1.ID }}"
       key: "param1"
-      file_id: "770e8400-e29b-41d4-a716-446655440001"
-    - id: "990e8400-e29b-41d4-a716-446655440002"
-      block_id: "880e8400-e29b-41d4-a716-446655440002"
+      file_id: "{{ $.File.file1.ID }}"
+    - _id: param2
+      id: "990e8400-e29b-41d4-a716-446655440002"
+      block_id: "{{ $.Block.block2.ID }}"
       key: "param2"
-      file_id: "770e8400-e29b-41d4-a716-446655440002"
+      file_id: "{{ $.File.file2.ID }}"

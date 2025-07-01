@@ -82,7 +82,7 @@ func main() {
 	db.RegisterModel((*Project)(nil), (*Model)(nil), (*File)(nil), (*Block)(nil), (*Parameter)(nil))
 
 	fixture := dbfixture.New(db, dbfixture.WithRecreateTables())
-	if err := fixture.Load(ctx, os.DirFS("testdata"), "fixture.yml"); err != nil {
+	if err := fixture.Load(ctx, os.DirFS("testdata"), "fixture_example.yml"); err != nil {
 		log.Fatalf("Erreur lors du chargement des fixtures : %v", err)
 	}
 
