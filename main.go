@@ -9,7 +9,7 @@ import (
 
 	"database/sql"
 
-	"concurrent-db/lockanalyzer"
+	"concurrent-db/formatters"
 
 	_ "github.com/lib/pq"
 	"github.com/uptrace/bun"
@@ -34,7 +34,7 @@ type Block struct {
 	ID      string `bun:",pk,type:uuid,default:gen_random_uuid()"`
 	ModelID string `bun:",type:uuid,notnull,on_delete:CASCADE"`
 	Model   *Model `bun:"rel:belongs-to,join:model_id=id"`
-	Type    string `bun:",notnull"` // 'GENERATED', 'USER', 'SUBSYSTEM', etc.
+	Type    string `bun:",notnull"` // 'GENERATED', 'STANDARD', 'SUBSYSTEM', etc.
 	Name    string
 }
 
@@ -273,7 +273,11 @@ func testConcurrentTransactions(db *bun.DB, ctx1, ctx2 context.Context, model Mo
 	fmt.Printf("Transaction T1 (UPDATE models) démarrée - Trigger va mettre à jour projects.modified_at\n")
 
 	// Afficher les locks avant T2
-	lockanalyzer.ShowLocks(db)
+	fmt.Println("\n--- État des locks avant T2 ---")
+	markdownFormatter := formatters.NewMarkdownFormatter()
+	if err := formatters.GenerateAndDisplayReport(db, markdownFormatter); err != nil {
+		log.Printf("Erreur lors de l'affichage du rapport: %v", err)
+	}
 
 	// Transaction T2: UPDATE files (courte transaction)
 	tx2, err := db.BeginTx(ctx2, &sql.TxOptions{
@@ -292,7 +296,33 @@ func testConcurrentTransactions(db *bun.DB, ctx1, ctx2 context.Context, model Mo
 	}
 	fmt.Print(" mettre à jour projects.modified_at...\n")
 
+	// Démarrer l'analyse des locks en temps réel dans une goroutine
+	stopAnalysis := make(chan bool)
+	go func() {
+		ticker := time.NewTicker(2 * time.Second)
+		defer ticker.Stop()
+
+		for {
+			select {
+			case <-ticker.C:
+				fmt.Println("\n--- Analyse des locks en temps réel ---")
+				// Afficher le rapport en format markdown
+				markdownFormatter := formatters.NewMarkdownFormatter()
+				if err := formatters.GenerateAndDisplayReport(db, markdownFormatter); err != nil {
+					fmt.Printf("Erreur lors de l'affichage du rapport: %v\n", err)
+				}
+			case <-stopAnalysis:
+				return
+			}
+		}
+	}()
+
+	// Exécuter T2 et voir si elle est bloquée
 	_, err = tx2.NewUpdate().Model(&File{ID: file.ID, Content: "updated content"}).Column("content").WherePK().Exec(ctx2)
+
+	// Arrêter l'analyse en temps réel
+	stopAnalysis <- true
+
 	if err != nil {
 		fmt.Printf("T2 bloquée (lock sur projects attendu): %v\n", err)
 	} else {
@@ -300,7 +330,11 @@ func testConcurrentTransactions(db *bun.DB, ctx1, ctx2 context.Context, model Mo
 	}
 
 	// Afficher les locks après T2
-	lockanalyzer.ShowLocks(db)
+	fmt.Println("\n--- État des locks après T2 ---")
+	postMarkdownFormatter := formatters.NewMarkdownFormatter()
+	if err := formatters.GenerateAndDisplayReport(db, postMarkdownFormatter); err != nil {
+		log.Printf("Erreur lors de l'affichage du rapport: %v", err)
+	}
 
 	fmt.Println("Pause de 5 secondes")
 	time.Sleep(5 * time.Second)
@@ -314,4 +348,33 @@ func testConcurrentTransactions(db *bun.DB, ctx1, ctx2 context.Context, model Mo
 	}
 
 	fmt.Printf("Test %s terminé\n", fileType)
+
+	// Générer un rapport complet après le test
+	fmt.Println("\n--- Génération du rapport d'analyse ---")
+
+	// Générer les rapports finaux
+	finalTextFormatter := formatters.NewTextFormatter()
+	finalJSONFormatter := formatters.NewJSONFormatter()
+	finalMarkdownFormatter := formatters.NewMarkdownFormatter()
+
+	// Générer le rapport texte
+	if err := formatters.GenerateAndWriteReport(db, finalTextFormatter, fmt.Sprintf("lock_report_%s.txt", fileType)); err != nil {
+		log.Printf("Erreur lors de la génération du rapport texte: %v", err)
+	} else {
+		fmt.Printf("Rapport texte généré: lock_report_%s.txt\n", fileType)
+	}
+
+	// Générer le rapport JSON
+	if err := formatters.GenerateAndWriteReport(db, finalJSONFormatter, fmt.Sprintf("lock_report_%s.json", fileType)); err != nil {
+		log.Printf("Erreur lors de la génération du rapport JSON: %v", err)
+	} else {
+		fmt.Printf("Rapport JSON généré: lock_report_%s.json\n", fileType)
+	}
+
+	// Générer le rapport Markdown
+	if err := formatters.GenerateAndWriteReport(db, finalMarkdownFormatter, fmt.Sprintf("lock_report_%s.md", fileType)); err != nil {
+		log.Printf("Erreur lors de la génération du rapport Markdown: %v", err)
+	} else {
+		fmt.Printf("Rapport Markdown généré: lock_report_%s.md\n", fileType)
+	}
 }
