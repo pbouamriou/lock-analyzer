@@ -126,5 +126,141 @@
   {
     "id": "report_footer",
     "translation": "Rapport généré automatiquement par LockAnalyzer"
+  },
+  {
+    "id": "cli_tool_title",
+    "translation": "LockAnalyzer - Outil d'analyse des locks PostgreSQL"
+  },
+  {
+    "id": "cli_usage",
+    "translation": "UTILISATION"
+  },
+  {
+    "id": "cli_required_parameters",
+    "translation": "PARAMÈTRES OBLIGATOIRES"
+  },
+  {
+    "id": "cli_dsn_description",
+    "translation": "DSN de connexion PostgreSQL"
+  },
+  {
+    "id": "cli_dsn_example",
+    "translation": "Exemple: postgres://user:pass@localhost:5432/db"
+  },
+  {
+    "id": "cli_options",
+    "translation": "OPTIONS"
+  },
+  {
+    "id": "cli_format_description",
+    "translation": "Format de sortie (défaut: markdown)"
+  },
+  {
+    "id": "cli_format_values",
+    "translation": "Valeurs: markdown, json, text"
+  },
+  {
+    "id": "cli_lang_description",
+    "translation": "Langue du rapport (défaut: fr)"
+  },
+  {
+    "id": "cli_lang_values",
+    "translation": "Valeurs: fr, en, es, de"
+  },
+  {
+    "id": "cli_output_description",
+    "translation": "Fichier de sortie (défaut: stdout)"
+  },
+  {
+    "id": "cli_output_use",
+    "translation": "Utiliser 'stdout' pour l'affichage à l'écran"
+  },
+  {
+    "id": "cli_interval_description",
+    "translation": "Surveillance en temps réel"
+  },
+  {
+    "id": "cli_interval_examples",
+    "translation": "Exemples: 5s, 30s, 1m, 5m"
+  },
+  {
+    "id": "cli_help_description",
+    "translation": "Afficher cette aide"
+  },
+  {
+    "id": "cli_examples",
+    "translation": "EXEMPLES"
+  },
+  {
+    "id": "cli_example_1",
+    "translation": "Rapport unique en Markdown vers stdout (Français)"
+  },
+  {
+    "id": "cli_example_2",
+    "translation": "Rapport JSON en Anglais vers fichier"
+  },
+  {
+    "id": "cli_example_3",
+    "translation": "Surveillance en temps réel toutes les 10 secondes (Espagnol)"
+  },
+  {
+    "id": "cli_example_4",
+    "translation": "Surveillance en temps réel vers fichier (Allemand)"
+  },
+  {
+    "id": "cli_dsn_required",
+    "translation": "Le paramètre -dsn est obligatoire"
+  },
+  {
+    "id": "cli_invalid_format",
+    "translation": "Format invalide: %s. Formats supportés: markdown, json, text"
+  },
+  {
+    "id": "cli_invalid_language",
+    "translation": "Langue invalide: %s. Langues supportées: fr, en, es, de"
+  },
+  {
+    "id": "cli_db_connection_error",
+    "translation": "Erreur de connexion à la base de données: %v"
+  },
+  {
+    "id": "cli_formatter_error",
+    "translation": "Erreur lors de la création du formateur: %v"
+  },
+  {
+    "id": "cli_generating_report",
+    "translation": "Génération du rapport d'analyse des locks..."
+  },
+  {
+    "id": "cli_report_generation_error",
+    "translation": "Erreur lors de la génération du rapport: %v"
+  },
+  {
+    "id": "cli_report_writing_error",
+    "translation": "Erreur lors de l'écriture du rapport: %v"
+  },
+  {
+    "id": "cli_report_generated",
+    "translation": "Rapport généré"
+  },
+  {
+    "id": "cli_realtime_monitoring",
+    "translation": "Surveillance en temps réel des locks (intervalle: %s)"
+  },
+  {
+    "id": "cli_output",
+    "translation": "Sortie"
+  },
+  {
+    "id": "cli_press_ctrl_c",
+    "translation": "Appuyez sur Ctrl+C pour arrêter"
+  },
+  {
+    "id": "cli_analysis",
+    "translation": "Analyse"
+  },
+  {
+    "id": "cli_monitoring_stopped",
+    "translation": "Surveillance arrêtée par l'utilisateur"
   }
 ] 

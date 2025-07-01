@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"concurrent-db/formatters"
+	"concurrent-db/i18n"
 
 	_ "github.com/lib/pq"
 	"github.com/uptrace/bun"
@@ -17,107 +18,166 @@ import (
 )
 
 func main() {
-	// Flag configuration
+	// Get language from environment or default to French
+	lang := getLanguageFromEnv()
+
+	// Create translator for CLI messages
+	translator := i18n.NewTranslator(lang)
+
+	// Flag configuration with localized descriptions
 	var (
-		dsn      = flag.String("dsn", "", "PostgreSQL connection DSN (e.g., postgres://user:pass@localhost:5432/db)")
-		format   = flag.String("format", "markdown", "Output format: markdown, json, text")
-		lang     = flag.String("lang", "fr", "Report language: fr, en, es, de")
-		output   = flag.String("output", "stdout", "Output file or 'stdout' for display")
-		interval = flag.Duration("interval", 0, "Real-time monitoring interval (e.g., 5s, 1m)")
-		help     = flag.Bool("help", false, "Show help")
+		dsn      = flag.String("dsn", "", translator.T("cli_dsn_description"))
+		format   = flag.String("format", "markdown", translator.T("cli_format_description"))
+		langFlag = flag.String("lang", lang, translator.T("cli_lang_description"))
+		output   = flag.String("output", "stdout", translator.T("cli_output_description"))
+		interval = flag.Duration("interval", 0, translator.T("cli_interval_description"))
+		help     = flag.Bool("help", false, translator.T("cli_help_description"))
 	)
 	flag.Parse()
 
+	// Update translator if language was specified via flag
+	if *langFlag != lang {
+		translator = i18n.NewTranslator(*langFlag)
+	}
+
 	// Display help
 	if *help {
-		printHelp()
+		printHelp(translator)
 		return
 	}
 
 	// Parameter validation
 	if *dsn == "" {
-		log.Fatal("The -dsn parameter is required")
+		log.Fatal(translator.T("cli_dsn_required"))
 	}
 
 	// Format validation
 	validFormats := map[string]bool{"markdown": true, "json": true, "text": true}
 	if !validFormats[*format] {
-		log.Fatalf("Invalid format: %s. Supported formats: markdown, json, text", *format)
+		log.Fatalf(translator.T("cli_invalid_format"), *format)
 	}
 
 	// Language validation
 	validLangs := map[string]bool{"fr": true, "en": true, "es": true, "de": true}
-	if !validLangs[*lang] {
-		log.Fatalf("Invalid language: %s. Supported languages: fr, en, es, de", *lang)
+	if !validLangs[*langFlag] {
+		log.Fatalf(translator.T("cli_invalid_language"), *langFlag)
 	}
 
 	// Database connection
 	db, err := connectDB(*dsn)
 	if err != nil {
-		log.Fatalf("Database connection error: %v", err)
+		log.Fatalf(translator.T("cli_db_connection_error"), err)
 	}
 	defer db.Close()
 
 	// Create formatter
-	formatter, err := formatters.NewFormatter(*format, *lang)
+	formatter, err := formatters.NewFormatter(*format, *langFlag)
 	if err != nil {
-		log.Fatalf("Error creating formatter: %v", err)
+		log.Fatalf(translator.T("cli_formatter_error"), err)
 	}
 
 	// Real-time monitoring mode
 	if *interval > 0 {
-		runRealTimeMonitoring(db, formatter, *interval, *output)
+		runRealTimeMonitoring(db, formatter, *interval, *output, translator)
 		return
 	}
 
 	// Single report mode
-	generateSingleReport(db, formatter, *output)
+	generateSingleReport(db, formatter, *output, translator)
 }
 
-func printHelp() {
-	fmt.Print(`🔒 LockAnalyzer - PostgreSQL Lock Analysis Tool
+// getLanguageFromEnv detects the system language from environment variables
+func getLanguageFromEnv() string {
+	lang := os.Getenv("LANG")
+	if lang == "" {
+		lang = os.Getenv("LC_ALL")
+	}
+	if lang == "" {
+		lang = os.Getenv("LC_MESSAGES")
+	}
 
-USAGE:
+	// Extract language code
+	if strings.Contains(lang, "fr") {
+		return "fr"
+	}
+	if strings.Contains(lang, "en") {
+		return "en"
+	}
+	if strings.Contains(lang, "es") {
+		return "es"
+	}
+	if strings.Contains(lang, "de") {
+		return "de"
+	}
+
+	return "fr" // Default to French
+}
+
+func printHelp(translator *i18n.Translator) {
+	fmt.Printf(`🔒 %s
+
+%s:
   lockanalyzer -dsn="postgres://user:pass@localhost:5432/db" [options]
 
-REQUIRED PARAMETERS:
+%s:
   -dsn string
-        PostgreSQL connection DSN
-        Example: postgres://user:pass@localhost:5432/db
+        %s
+        %s
 
-OPTIONS:
+%s:
   -format string
-        Output format (default: markdown)
-        Values: markdown, json, text
+        %s
+        %s
 
   -lang string
-        Report language (default: fr)
-        Values: fr, en, es, de
+        %s
+        %s
 
   -output string
-        Output file (default: stdout)
-        Use 'stdout' for screen display
+        %s
+        %s
 
   -interval duration
-        Real-time monitoring
-        Examples: 5s, 30s, 1m, 5m
+        %s
+        %s
 
   -help
-        Show this help
+        %s
 
-EXAMPLES:
-  # Single report in Markdown to stdout (French)
+%s:
+  # %s
   lockanalyzer -dsn="postgres://user@localhost:5432/testdb" -format=markdown
 
-  # JSON report in English to file
+  # %s
   lockanalyzer -dsn="postgres://user@localhost:5432/testdb" -format=json -lang=en -output=report.json
 
-  # Real-time monitoring every 10 seconds (Spanish)
+  # %s
   lockanalyzer -dsn="postgres://user@localhost:5432/testdb" -interval=10s -lang=es
 
-  # Real-time monitoring to file (German)
+  # %s
   lockanalyzer -dsn="postgres://user@localhost:5432/testdb" -interval=30s -lang=de -output=monitoring.txt
-`)
+`,
+		translator.T("cli_tool_title"),
+		translator.T("cli_usage"),
+		translator.T("cli_required_parameters"),
+		translator.T("cli_dsn_description"),
+		translator.T("cli_dsn_example"),
+		translator.T("cli_options"),
+		translator.T("cli_format_description"),
+		translator.T("cli_format_values"),
+		translator.T("cli_lang_description"),
+		translator.T("cli_lang_values"),
+		translator.T("cli_output_description"),
+		translator.T("cli_output_use"),
+		translator.T("cli_interval_description"),
+		translator.T("cli_interval_examples"),
+		translator.T("cli_help_description"),
+		translator.T("cli_examples"),
+		translator.T("cli_example_1"),
+		translator.T("cli_example_2"),
+		translator.T("cli_example_3"),
+		translator.T("cli_example_4"),
+	)
 }
 
 func connectDB(dsn string) (*bun.DB, error) {
@@ -135,27 +195,27 @@ func connectDB(dsn string) (*bun.DB, error) {
 	return db, nil
 }
 
-func generateSingleReport(db *bun.DB, formatter formatters.LockReportFormatter, output string) {
-	fmt.Printf("🔍 Generating lock analysis report...\n")
+func generateSingleReport(db *bun.DB, formatter formatters.LockReportFormatter, output string, translator *i18n.Translator) {
+	fmt.Printf("🔍 %s\n", translator.T("cli_generating_report"))
 
 	if output == "stdout" {
 		// Display to stdout
 		if err := formatters.GenerateAndDisplayReport(db, formatter); err != nil {
-			log.Fatalf("Error generating report: %v", err)
+			log.Fatalf(translator.T("cli_report_generation_error"), err)
 		}
 	} else {
 		// Write to file
 		if err := formatters.GenerateAndWriteReport(db, formatter, output); err != nil {
-			log.Fatalf("Error writing report: %v", err)
+			log.Fatalf(translator.T("cli_report_writing_error"), err)
 		}
-		fmt.Printf("✅ Report generated: %s\n", output)
+		fmt.Printf("✅ %s: %s\n", translator.T("cli_report_generated"), output)
 	}
 }
 
-func runRealTimeMonitoring(db *bun.DB, formatter formatters.LockReportFormatter, interval time.Duration, output string) {
-	fmt.Printf("🔍 Real-time lock monitoring (interval: %s)\n", interval)
-	fmt.Printf("📁 Output: %s\n", output)
-	fmt.Printf("⏹️  Press Ctrl+C to stop\n\n")
+func runRealTimeMonitoring(db *bun.DB, formatter formatters.LockReportFormatter, interval time.Duration, output string, translator *i18n.Translator) {
+	fmt.Printf("🔍 %s\n", fmt.Sprintf(translator.T("cli_realtime_monitoring"), interval))
+	fmt.Printf("📁 %s: %s\n", translator.T("cli_output"), output)
+	fmt.Printf("⏹️  %s\n\n", translator.T("cli_press_ctrl_c"))
 
 	ticker := time.NewTicker(interval)
 	defer ticker.Stop()
@@ -172,9 +232,9 @@ func runRealTimeMonitoring(db *bun.DB, formatter formatters.LockReportFormatter,
 			timestamp := time.Now().Format("15:04:05")
 
 			if output == "stdout" {
-				fmt.Printf("\n--- Analysis #%d (%s) ---\n", counter, timestamp)
+				fmt.Printf("\n--- %s #%d (%s) ---\n", translator.T("cli_analysis"), counter, timestamp)
 				if err := formatters.GenerateAndDisplayReport(db, formatter); err != nil {
-					log.Printf("Error generating report: %v", err)
+					log.Printf(translator.T("cli_report_generation_error"), err)
 				}
 			} else {
 				// Generate filename with timestamp
@@ -186,14 +246,14 @@ func runRealTimeMonitoring(db *bun.DB, formatter formatters.LockReportFormatter,
 					ext)
 
 				if err := formatters.GenerateAndWriteReport(db, formatter, filename); err != nil {
-					log.Printf("Error writing report: %v", err)
+					log.Printf(translator.T("cli_report_writing_error"), err)
 				} else {
-					fmt.Printf("✅ Report #%d generated: %s\n", counter, filename)
+					fmt.Printf("✅ %s #%d: %s\n", translator.T("cli_report_generated"), counter, filename)
 				}
 			}
 
 		case <-sigChan:
-			fmt.Println("\n🛑 Monitoring stopped by user")
+			fmt.Printf("\n🛑 %s\n", translator.T("cli_monitoring_stopped"))
 			return
 		}
 	}
