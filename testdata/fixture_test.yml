@@ -1,0 +1,48 @@
+- table: projects
+  rows:
+    - id: "550e8400-e29b-41d4-a716-446655440001"
+      name: "Test Project 1"
+      modified_at: "2024-01-01T10:00:00Z"
+    - id: "550e8400-e29b-41d4-a716-446655440002"
+      name: "Test Project 2"
+      modified_at: "2024-01-01T11:00:00Z"
+
+- table: models
+  rows:
+    - id: "660e8400-e29b-41d4-a716-446655440001"
+      project_id: "550e8400-e29b-41d4-a716-446655440001"
+      state: "active"
+    - id: "660e8400-e29b-41d4-a716-446655440002"
+      project_id: "550e8400-e29b-41d4-a716-446655440001"
+      state: "draft"
+
+- table: files
+  rows:
+    - id: "770e8400-e29b-41d4-a716-446655440001"
+      project_id: "550e8400-e29b-41d4-a716-446655440001"
+      content: "Test content 1"
+    - id: "770e8400-e29b-41d4-a716-446655440002"
+      project_id: "550e8400-e29b-41d4-a716-446655440001"
+      content: "Test content 2"
+
+- table: blocks
+  rows:
+    - id: "880e8400-e29b-41d4-a716-446655440001"
+      model_id: "660e8400-e29b-41d4-a716-446655440001"
+      type: "STANDARD"
+      name: "Standard Block 1"
+    - id: "880e8400-e29b-41d4-a716-446655440002"
+      model_id: "660e8400-e29b-41d4-a716-446655440001"
+      type: "GENERATED"
+      name: "Generated Block 1"
+
+- table: parameters
+  rows:
+    - id: "990e8400-e29b-41d4-a716-446655440001"
+      block_id: "880e8400-e29b-41d4-a716-446655440001"
+      key: "param1"
+      file_id: "770e8400-e29b-41d4-a716-446655440001"
+    - id: "990e8400-e29b-41d4-a716-446655440002"
+      block_id: "880e8400-e29b-41d4-a716-446655440002"
+      key: "param2"
+      file_id: "770e8400-e29b-41d4-a716-446655440002"

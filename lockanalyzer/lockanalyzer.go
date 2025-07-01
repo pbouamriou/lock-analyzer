@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	"io"
 	"time"
 
 	"github.com/uptrace/bun"
@@ -99,6 +100,12 @@ type ReportSummary struct {
 	CriticalIssues  int
 	Warnings        int
 	Recommendations int
+}
+
+// LockReportFormatter définit l'interface pour les formatters de rapports
+type LockReportFormatter interface {
+	Format(data *ReportData, output io.Writer) error
+	GetFileExtension() string
 }
 
 // DetectBlockedTransactions détecte les transactions bloquées en temps réel
