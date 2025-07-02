@@ -7,7 +7,7 @@ import (
 	"os"
 	"strings"
 
-	"lock-analyser/locales"
+	"github.com/pbouamriou/lock-analyzer/locales"
 
 	"github.com/nicksnyder/go-i18n/v2/i18n"
 	"golang.org/x/text/language"
@@ -71,7 +71,6 @@ func NewTranslator(lang string) *Translator {
 				if !entry.IsDir() && strings.HasSuffix(entry.Name(), ".json") {
 					content, err := fs.ReadFile(localesFS, entry.Name())
 					if err == nil {
-						fmt.Printf("Loading embedded translation file: %s\n", entry.Name())
 						bundle.MustParseMessageFileBytes(content, entry.Name())
 					} else {
 						fmt.Printf("Error reading embedded file %s: %v\n", entry.Name(), err)

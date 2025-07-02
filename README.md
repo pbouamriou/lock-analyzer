@@ -23,8 +23,8 @@ A powerful PostgreSQL lock analysis tool written in Go that helps identify and r
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/lock-analyser.git
-cd lock-analyser
+git clone https://github.com/pbouamriou/lock-analyzer.git
+cd lock-analyzer
 
 # Build the application
 make build
@@ -49,7 +49,7 @@ make build
 ## Project Structure
 
 ```
-lock-analyser/
+github.com/pbouamriou/lock-analyzer/
 ├── cmd/
 │   ├── example/           # Example application
 │   └── lockanalyzer/      # CLI tool

@@ -7,8 +7,8 @@ import (
 	"strings"
 	"time"
 
-	"lock-analyser/i18n"
-	"lock-analyser/lockanalyzer"
+	"github.com/pbouamriou/lock-analyzer/i18n"
+	"github.com/pbouamriou/lock-analyzer/lockanalyzer"
 )
 
 // MarkdownFormatter formats data as Markdown with multilingual support

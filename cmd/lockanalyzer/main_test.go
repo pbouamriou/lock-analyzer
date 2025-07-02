@@ -1,7 +1,7 @@
 package main
 
 import (
-	"lock-analyser/locales"
+	"github.com/pbouamriou/lock-analyzer/locales"
 	"os"
 	"testing"
 )

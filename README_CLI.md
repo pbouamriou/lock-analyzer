@@ -166,7 +166,7 @@ make uninstall
 ### Structure du projet
 
 ```
-lock-analyser/
+github.com/pbouamriou/lock-analyzer/
 ├── cmd/lockanalyzer/     # Outil CLI
 ├── formatters/          # Formatters de sortie
 ├── lockanalyzer/        # Logique d'analyse

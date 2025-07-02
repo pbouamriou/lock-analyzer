@@ -9,8 +9,8 @@ import (
 	"strings"
 	"time"
 
-	"lock-analyser/formatters"
-	"lock-analyser/i18n"
+	"github.com/pbouamriou/lock-analyzer/formatters"
+	"github.com/pbouamriou/lock-analyzer/i18n"
 
 	_ "github.com/lib/pq"
 	"github.com/uptrace/bun"

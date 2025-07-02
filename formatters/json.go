@@ -7,8 +7,8 @@ import (
 	"os"
 	"time"
 
-	"lock-analyser/i18n"
-	"lock-analyser/lockanalyzer"
+	"github.com/pbouamriou/lock-analyzer/i18n"
+	"github.com/pbouamriou/lock-analyzer/lockanalyzer"
 )
 
 // JSONFormatter formats data as JSON with multilingual support

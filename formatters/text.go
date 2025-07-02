@@ -7,8 +7,8 @@ import (
 	"strings"
 	"time"
 
-	"lock-analyser/i18n"
-	"lock-analyser/lockanalyzer"
+	"github.com/pbouamriou/lock-analyzer/i18n"
+	"github.com/pbouamriou/lock-analyzer/lockanalyzer"
 )
 
 // TextFormatter formats data as text with multilingual support

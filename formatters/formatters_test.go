@@ -10,7 +10,7 @@ import (
 	"testing"
 	"time"
 
-	"lock-analyser/lockanalyzer"
+	"github.com/pbouamriou/lock-analyzer/lockanalyzer"
 )
 
 // TestMarkdownFormatter tests the Markdown formatter

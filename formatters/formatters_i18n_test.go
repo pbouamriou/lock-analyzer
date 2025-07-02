@@ -6,7 +6,7 @@ import (
 	"testing"
 	"time"
 
-	"lock-analyser/lockanalyzer"
+	"github.com/pbouamriou/lock-analyzer/lockanalyzer"
 )
 
 func TestNewFormatter(t *testing.T) {

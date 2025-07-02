@@ -5,8 +5,8 @@ import (
 	"io"
 	"os"
 
-	"lock-analyser/i18n"
-	"lock-analyser/lockanalyzer"
+	"github.com/pbouamriou/lock-analyzer/i18n"
+	"github.com/pbouamriou/lock-analyzer/lockanalyzer"
 
 	"github.com/uptrace/bun"
 )

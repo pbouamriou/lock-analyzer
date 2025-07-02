@@ -1,4 +1,4 @@
-module lock-analyser
+module github.com/pbouamriou/lock-analyzer
 
 go 1.24.4
 

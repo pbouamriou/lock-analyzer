@@ -3,7 +3,7 @@ package formatters
 import (
 	"fmt"
 	"io"
-	"lock-analyser/lockanalyzer"
+	"github.com/pbouamriou/lock-analyzer/lockanalyzer"
 	"log"
 
 	"github.com/uptrace/bun"
