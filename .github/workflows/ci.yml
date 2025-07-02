@@ -93,7 +93,7 @@ jobs:
           go build -o build/lockanalyzer-example cmd/example/main.go
 
       - name: Upload build artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: binaries
           path: build/
