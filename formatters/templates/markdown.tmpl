@@ -1,0 +1,54 @@
+# {{.Translator.T "report_title"}}
+
+**{{.Translator.T "generated_at"}}:** {{.Data.Timestamp.Format "2006-01-02 15:04:05"}}
+
+## 📊 {{.Translator.T "summary_title"}}
+
+| {{.Translator.T "table_metric"}} | {{.Translator.T "table_value"}} |
+|--------|-------|
+| 🔒 {{.Translator.T "total_locks"}} | {{.Data.Summary.TotalLocks}} |
+| ⏳ {{.Translator.T "blocked_transactions"}} | {{.Data.Summary.BlockedTxns}} |
+| ⏰ {{.Translator.T "long_transactions"}} | {{.Data.Summary.LongTxns}} |
+| 💀 {{.Translator.T "deadlocks_detected"}} | {{.Data.Summary.Deadlocks}} |
+| ⚠️ {{.Translator.T "object_conflicts"}} | {{.Data.Summary.ObjectConflicts}} |
+| 🚨 {{.Translator.T "critical_issues"}} | {{.Data.Summary.CriticalIssues}} |
+| ⚡ {{.Translator.T "warnings"}} | {{.Data.Summary.Warnings}} |
+| 💡 {{.Translator.T "recommendations"}} | {{.Data.Summary.Recommendations}} |
+
+{{if .Data.Locks}}
+## 🔒 {{.Translator.T "active_locks"}}
+
+| {{.Translator.T "table_pid"}} | {{.Translator.T "table_mode"}} | {{.Translator.T "table_granted"}} | {{.Translator.T "table_type"}} | {{.Translator.T "table_object"}} | {{.Translator.T "table_page"}} | {{.Translator.T "table_tuple"}} |
+|-----|------|---------|------|--------|------|-------|
+{{range .Data.Locks}}| {{.PID}} | {{.Mode}} | {{.Granted}} | {{.Type}} | {{.Object}} | {{.Page}} | {{.Tuple}} |
+{{end}}
+{{end}}
+
+{{if .Data.BlockedTxns}}
+## ⏳ {{.Translator.T "blocked_transactions_section"}}
+
+| {{.Translator.T "table_pid"}} | {{.Translator.T "table_duration"}} | {{.Translator.T "table_query"}} |
+|-----|----------|-------|
+{{range .Data.BlockedTxns}}| {{.PID}} | {{.Duration}} | `{{.Query}}` |
+{{end}}
+{{end}}
+
+{{if .Data.LongTxns}}
+## ⏰ {{.Translator.T "long_transactions_section"}}
+
+| {{.Translator.T "table_pid"}} | {{.Translator.T "table_duration"}} | {{.Translator.T "table_query"}} |
+|-----|----------|-------|
+{{range .Data.LongTxns}}| {{.PID}} | {{.Duration}} | `{{.Query}}` |
+{{end}}
+{{end}}
+
+{{if .Data.Suggestions}}
+## 💡 {{.Translator.T "improvement_suggestions"}}
+
+{{range $index, $suggestion := .Data.Suggestions}}{{$index | add 1}}. {{$suggestion}}
+
+{{end}}
+{{end}}
+
+---
+*{{.Translator.T "report_footer"}}* 

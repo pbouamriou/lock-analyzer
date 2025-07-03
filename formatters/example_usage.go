@@ -3,8 +3,9 @@ package formatters
 import (
 	"fmt"
 	"io"
-	"github.com/pbouamriou/lock-analyzer/lockanalyzer"
 	"log"
+
+	"github.com/pbouamriou/lock-analyzer/lockanalyzer"
 
 	"github.com/uptrace/bun"
 )
@@ -12,9 +13,15 @@ import (
 // ExampleUsage shows how to use the new formatter architecture
 func ExampleUsage(db *bun.DB) {
 	// Create formatters
-	textFormatter := NewTextFormatter("")
+	textFormatter, err := NewTextFormatter("en")
+	if err != nil {
+		log.Fatalf("Error creating text formatter: %v", err)
+	}
 	jsonFormatter := NewJSONFormatter("")
-	markdownFormatter := NewMarkdownFormatter("")
+	markdownFormatter, err := NewMarkdownFormatter("fr")
+	if err != nil {
+		log.Fatalf("Error creating markdown formatter: %v", err)
+	}
 
 	// Example 1: Generate and display a Markdown report
 	fmt.Println("=== Displaying Markdown report ===")
