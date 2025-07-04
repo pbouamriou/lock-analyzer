@@ -1,0 +1,41 @@
+{{repeat "=" 80}}
+{{.Translator.T "report_title"}}
+{{repeat "=" 80}}
+{{.Translator.T "generated_at"}}: {{.Data.Timestamp.Format "2006-01-02 15:04:05"}}
+
+{{.Translator.T "summary_title"}}
+{{repeat "-" 40}}
+{{.Translator.T "total_locks"}}: {{.Data.Summary.TotalLocks}}
+{{.Translator.T "blocked_transactions"}}: {{.Data.Summary.BlockedTxns}}
+{{.Translator.T "long_transactions"}}: {{.Data.Summary.LongTxns}}
+{{.Translator.T "deadlocks_detected"}}: {{.Data.Summary.Deadlocks}}
+{{.Translator.T "object_conflicts"}}: {{.Data.Summary.ObjectConflicts}}
+{{.Translator.T "critical_issues"}}: {{.Data.Summary.CriticalIssues}}
+{{.Translator.T "warnings"}}: {{.Data.Summary.Warnings}}
+{{.Translator.T "recommendations"}}: {{.Data.Summary.Recommendations}}
+
+{{if .Data.Locks}}{{.Translator.T "active_locks"}}
+{{repeat "-" 40}}
+{{range .Data.Locks}}PID: {{.PID}}, Mode: {{.Mode}}, Granted: {{.Granted}}, Type: {{.Type}}, Object: {{.Object}}
+{{end}}
+{{end}}
+
+{{if .Data.BlockedTxns}}{{.Translator.T "blocked_transactions_section"}}
+{{repeat "-" 40}}
+{{range .Data.BlockedTxns}}PID: {{.PID}}, Duration: {{.Duration}}, Query: {{.Query}}
+{{end}}
+{{end}}
+
+{{if .Data.LongTxns}}{{.Translator.T "long_transactions_section"}}
+{{repeat "-" 40}}
+{{range .Data.LongTxns}}PID: {{.PID}}, Duration: {{.Duration}}, Query: {{.Query}}
+{{end}}
+{{end}}
+
+{{if .Data.Suggestions}}{{.Translator.T "improvement_suggestions"}}
+{{repeat "-" 40}}
+{{range $index, $suggestion := .Data.Suggestions}}{{$index | add 1}}. {{$suggestion}}
+{{end}}
+{{end}}
+
+{{.Translator.T "report_footer"}} 

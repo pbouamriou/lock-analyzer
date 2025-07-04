@@ -26,9 +26,9 @@ func NewFormatter(format, lang string) (LockReportFormatter, error) {
 
 	switch format {
 	case "text", "txt":
-		return NewTextFormatter(lang), nil
+		return NewTextFormatter(lang)
 	case "markdown", "md":
-		return NewMarkdownFormatter(lang), nil
+		return NewMarkdownFormatter(lang)
 	case "json":
 		return NewJSONFormatter(lang), nil
 	default:

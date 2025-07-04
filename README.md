@@ -8,7 +8,7 @@
 
 A powerful PostgreSQL lock analysis tool written in Go that helps identify and resolve database concurrency issues.
 
-## Features
+## 🚀 Features
 
 - 🔍 **Real-time lock monitoring** with configurable intervals
 - 📊 **Multiple output formats**: Markdown, JSON, and plain text
@@ -17,9 +17,7 @@ A powerful PostgreSQL lock analysis tool written in Go that helps identify and r
 - 🎯 **Smart suggestions** for lock optimization
 - 📈 **Comprehensive reporting** with detailed lock information
 
-## Quick Start
-
-### Installation
+## 📦 Installation
 
 ```bash
 # Clone the repository
@@ -29,92 +27,111 @@ cd lock-analyzer
 # Build the application
 make build
 
-# Run the CLI tool
+# Optional: Install globally
+make install
+```
+
+## 🎯 Quick Start
+
+### Help
+
+```bash
 ./build/lockanalyzer-cli -help
 ```
 
-### Basic Usage
+### Single Report
+
+#### Markdown report to stdout
 
 ```bash
-# Generate a single report
 ./build/lockanalyzer-cli -dsn="postgres://user:pass@localhost:5432/db" -format=markdown
+```
 
-# Real-time monitoring every 10 seconds
-./build/lockanalyzer-cli -dsn="postgres://user:pass@localhost:5432/db" -interval=10s
+#### JSON report to file
 
-# Generate JSON report to file
+```bash
 ./build/lockanalyzer-cli -dsn="postgres://user:pass@localhost:5432/db" -format=json -output=report.json
 ```
 
-## Project Structure
+#### Text report to file
 
+```bash
+./build/lockanalyzer-cli -dsn="postgres://user:pass@localhost:5432/db" -format=text -output=report.txt
 ```
-github.com/pbouamriou/lock-analyzer/
-├── cmd/
-│   ├── example/           # Example application
-│   └── lockanalyzer/      # CLI tool
-├── lockanalyzer/          # Core analysis engine
-├── formatters/            # Output formatters (Markdown, JSON, Text)
-├── i18n/                  # Internationalization
-├── locales/               # Embedded translation files
-├── scripts/               # Utility scripts
-├── testdata/              # Test fixtures
-└── Makefile               # Build and test automation
-```
-
-## Core Components
-
-### LockAnalyzer Engine
-
-The core analysis engine provides:
-
-- **Lock Detection**: Identifies active locks and their types
-- **Transaction Analysis**: Detects blocked and long-running transactions
-- **Conflict Resolution**: Analyzes object conflicts and deadlocks
-- **Performance Insights**: Index analysis and optimization suggestions
-
-### Formatters
-
-Multiple output formats for different use cases:
-
-- **Markdown**: Human-readable reports with rich formatting
-- **JSON**: Machine-readable output for automation
-- **Text**: Simple text output for logs and scripts
-
-### Internationalization
-
-Built-in support for multiple languages with embedded translation files:
-
-- French (default)
-- English
-- Spanish
-- German
-
-## Advanced Usage
 
 ### Real-time Monitoring
 
-```bash
-# Monitor locks every 5 seconds
-./build/lockanalyzer-cli -dsn="postgres://user:pass@localhost:5432/db" -interval=5s
+#### Monitoring to stdout (every 10 seconds)
 
-# Monitor with specific language and output format
+```bash
+./build/lockanalyzer-cli -dsn="postgres://user:pass@localhost:5432/db" -interval=10s
+```
+
+#### Monitoring to files (every 30 seconds)
+
+```bash
+./build/lockanalyzer-cli -dsn="postgres://user:pass@localhost:5432/db" -interval=30s -output=monitoring.md
+```
+
+## 🎯 Practical Examples
+
+### 1. Quick database analysis
+
+```bash
+# Complete Markdown report
+./build/lockanalyzer-cli -dsn="postgres://user@localhost:5432/production?sslmode=disable" -format=markdown
+```
+
+### 2. Monitoring during deployment
+
+```bash
+# Monitor locks for 5 minutes
+./build/lockanalyzer-cli -dsn="postgres://user@localhost:5432/production?sslmode=disable" -interval=15s -output=deployment_monitoring.json
+```
+
+### 3. Performance issue debugging
+
+```bash
+# Intensive monitoring (every 5 seconds)
+./build/lockanalyzer-cli -dsn="postgres://user@localhost:5432/production?sslmode=disable" -interval=5s -format=text
+```
+
+### 4. Monitoring with specific language and format
+
+```bash
+# Monitor with English language and JSON format
 ./build/lockanalyzer-cli -dsn="postgres://user:pass@localhost:5432/db" -interval=30s -lang=en -format=json -output=monitoring.json
 ```
 
-### Simulation Script
+## 📊 Output Formats
 
-Use the included simulation script to test lock detection:
+### Markdown
 
-```bash
-# Start lock simulation
-./scripts/simulate_locks.sh
+- **Advantages**: Readable, structured, compatible with documentation tools
+- **Usage**: Reports for teams, documentation, GitHub/GitLab
 
-# In another terminal, monitor the locks
-./build/lockanalyzer-cli -dsn="postgres://user:pass@localhost:5432/db" -interval=5s
-```
+### JSON
 
-## Configuration
+- **Advantages**: Structured, easily parsable, integration with other tools
+- **Usage**: Automation, monitoring, alerts
+
+### Text
+
+- **Advantages**: Simple, compatible with all systems
+- **Usage**: Logs, emails, legacy systems
+
+## 🔧 Configuration
+
+### CLI Parameters
+
+| Parameter   | Type     | Default  | Description                             |
+| ----------- | -------- | -------- | --------------------------------------- |
+| `-dsn`      | string   | -        | PostgreSQL connection string (required) |
+| `-format`   | string   | markdown | Output format (markdown, json, text)    |
+| `-lang`     | string   | fr       | Report language (fr, en, es, de)        |
+| `-output`   | string   | stdout   | Output file or 'stdout'                 |
+| `-interval` | duration | -        | Monitoring interval (e.g., 5s, 1m)      |
+| `-help`     | bool     | false    | Show help                               |
 
 ### Database Connection
 
@@ -137,7 +154,183 @@ postgres://user:pass@localhost:5432/db?sslmode=disable&connect_timeout=10
 - `LC_ALL`: Alternative language setting
 - `LC_MESSAGES`: Message language preference
 
-## Development
+## 🧪 Testing with Simulation
+
+To test the tool with simulated locks:
+
+```bash
+# Terminal 1: Start simulation
+./scripts/simulate_locks.sh
+
+# Terminal 2: Monitor locks
+./build/lockanalyzer-cli -dsn="postgres://user@localhost:5432/testdb?sslmode=disable" -interval=5s
+```
+
+## 📈 Analyzed Metrics
+
+- **Active locks**: Number and details of PostgreSQL locks
+- **Blocked transactions**: Transactions waiting for locks
+- **Long transactions**: Transactions running for more than 5 seconds
+- **Deadlocks**: Circular lock conflicts
+- **Object conflicts**: Multiple locks on the same objects
+- **Index analysis**: Index size and usage
+
+## 🚨 Automatic Suggestions
+
+The tool automatically generates improvement suggestions based on:
+
+- Presence of blocked transactions
+- Long transactions
+- Object conflicts
+- Detected deadlocks
+- High number of locks
+
+## 🌍 Internationalization
+
+### Embedded Translation Files
+
+This project uses Go's embedded file system (embed) to include translation files directly in the binary, avoiding missing file issues during installation.
+
+#### Architecture
+
+```
+github.com/pbouamriou/lock-analyzer/
+├── locales/               # Embedded translation files
+│   ├── en.json           # English translations
+│   ├── fr.json           # French translations (default)
+│   ├── es.json           # Spanish translations
+│   ├── de.json           # German translations
+│   ├── embedded.go       # Embedded file system implementation
+│   └── embedded_test.go  # Embedded file tests
+├── i18n/                  # Internationalization system
+│   ├── translator.go      # Translation manager and language detection
+│   └── translator_test.go # Translation tests
+└── cmd/
+    └── lockanalyzer/
+        └── main.go        # CLI entry point with i18n initialization
+```
+
+#### Advantages of Embedded Files
+
+1. **Portability**: The binary contains all translations
+2. **Installation simplicity**: No external files required
+3. **Consistency**: Translations are always available
+4. **Performance**: Fast loading from memory
+5. **Security**: No external manipulation of translation files
+
+#### Usage
+
+```bash
+# Tool works immediately without external files
+./build/lockanalyzer-cli -help
+
+# Language change
+./build/lockanalyzer-cli -help -lang=en
+./build/lockanalyzer-cli -help -lang=fr
+```
+
+#### Adding New Languages
+
+1. **Create translation file**:
+
+   ```bash
+   # Create locales/es.json for Spanish
+   cp locales/fr.json locales/es.json
+   # Modify translations in locales/es.json
+   ```
+
+2. **Update tests**:
+
+   ```go
+   // In tests, add the new language
+   expectedFiles := map[string]bool{
+       "en.json": false,
+       "fr.json": false,
+       "es.json": false,  // New language
+   }
+   ```
+
+3. **Rebuild**:
+   ```bash
+   make build
+   ```
+
+## 🏗️ Project Structure
+
+```
+github.com/pbouamriou/lock-analyzer/
+├── cmd/
+│   ├── example/           # Example application with usage patterns
+│   │   └── main.go        # Example implementation
+│   └── lockanalyzer/      # CLI tool entry point
+│       ├── main.go        # Main CLI application
+│       └── main_test.go   # CLI tests
+├── lockanalyzer/          # Core analysis engine
+│   ├── lockanalyzer.go    # Main analysis logic and PostgreSQL queries
+│   ├── lockanalyzer_test.go # Core engine tests
+│   ├── integration_test.go # Integration tests
+│   └── test_utils.go      # Test utilities and helpers
+├── formatters/            # Output formatters (Markdown, JSON, Text)
+│   ├── formatters.go      # Formatter interface and factory
+│   ├── markdown.go        # Markdown formatter implementation
+│   ├── json.go           # JSON formatter implementation
+│   ├── text.go           # Text formatter implementation
+│   ├── templates.go      # Template management
+│   ├── templates/        # Template files
+│   │   ├── markdown.tmpl # Markdown template
+│   │   └── text.tmpl     # Text template
+│   ├── example_usage.go  # Formatter usage examples
+│   ├── formatters_test.go # Formatter tests
+│   └── formatters_i18n_test.go # Internationalization tests
+├── i18n/                  # Internationalization system
+│   ├── translator.go      # Translation manager and language detection
+│   └── translator_test.go # Translation tests
+├── locales/               # Embedded translation files
+│   ├── en.json           # English translations
+│   ├── fr.json           # French translations (default)
+│   ├── es.json           # Spanish translations
+│   ├── de.json           # German translations
+│   ├── embedded.go       # Embedded file system implementation
+│   └── embedded_test.go  # Embedded file tests
+├── scripts/               # Utility scripts
+│   └── simulate_locks.sh # PostgreSQL lock simulation script
+├── testdata/              # Test fixtures and data
+│   ├── fixture_example.yml # Example test data
+│   └── fixture_test.yml  # Test fixtures
+├── docs/                  # Documentation
+│   └── badges.md         # Badge documentation
+├── database/              # Database utilities (future use)
+├── db-model/              # Database models (future use)
+├── config/                # Configuration management (future use)
+├── embedded/              # Embedded resources (future use)
+├── assets/                # Static assets (future use)
+├── go.mod                 # Go module definition
+├── go.sum                 # Go module checksums
+├── Makefile               # Build and test automation
+├── LICENSE                # MIT License
+└── README.md              # This documentation
+```
+
+## 🔧 Core Components
+
+### LockAnalyzer Engine
+
+The core analysis engine provides:
+
+- **Lock Detection**: Identifies active locks and their types
+- **Transaction Analysis**: Detects blocked and long-running transactions
+- **Conflict Resolution**: Analyzes object conflicts and deadlocks
+- **Performance Insights**: Index analysis and optimization suggestions
+
+### Formatters
+
+Multiple output formats for different use cases:
+
+- **Markdown**: Human-readable reports with rich formatting
+- **JSON**: Machine-readable output for automation
+- **Text**: Simple text output for logs and scripts
+
+## 🚀 Development
 
 ### Building
 
@@ -164,134 +357,136 @@ make test-formatters
 make test-coverage
 ```
 
-### Adding New Languages
-
-1. Create a new translation file in `locales/` (e.g., `es.json`)
-2. Add the language to the validation in `i18n/translator.go`
-3. Update tests to include the new language
-4. Rebuild the application
-
-## API Reference
-
-### CLI Options
-
-| Option      | Description                          | Default           |
-| ----------- | ------------------------------------ | ----------------- |
-| `-dsn`      | PostgreSQL connection string         | Required          |
-| `-format`   | Output format (markdown, json, text) | markdown          |
-| `-lang`     | Report language (fr, en, es, de)     | fr                |
-| `-output`   | Output file (stdout for screen)      | stdout            |
-| `-interval` | Real-time monitoring interval        | 0 (single report) |
-| `-help`     | Show help information                | false             |
-
-### Output Formats
-
-#### Markdown
-
-Rich formatting with sections, tables, and emphasis for human reading.
-
-#### JSON
-
-Structured data for programmatic processing and automation.
-
-#### Text
-
-Simple text output suitable for logs and scripts.
-
-## Examples
-
-### Basic Lock Analysis
+### Continuous Integration
 
 ```bash
-# Generate a comprehensive lock report
-./build/lockanalyzer-cli -dsn="postgres://user:pass@localhost:5432/db" -format=markdown
+# Build and test
+make build
+make test
+
+# Usage examples
+make example-markdown
+make example-json
+make example-monitoring
+
+# Cleanup
+make clean
+
+# Global installation
+make install
+make uninstall
 ```
 
-Output:
+### Adding a New Format
 
-```markdown
-# RAPPORT D'ANALYSE DES LOCKS POSTGRESQL
+1. Create a new formatter in `formatters/`
+2. Implement the `LockReportFormatter` interface
+3. Add the case in `createFormatter()`
+4. Update format validation
 
-## RÉSUMÉ EXÉCUTIF
+## 📝 Important Notes
 
-- Total locks actifs: 5
-- Transactions bloquées: 2
-- Deadlocks détectés: 0
-- Problèmes critiques: 1
+- **SSL**: Add `?sslmode=disable` to DSN for local connections
+- **Permissions**: PostgreSQL user must have access to system views
+- **Performance**: Real-time monitoring may impact performance
+- **Files**: Output files are overwritten if they already exist
 
-## LOCKS ACTIFS
+## 🔄 Migration from Old Approach
 
-- PID: 1234, Mode: ExclusiveLock, Object: users
-- PID: 5678, Mode: ShareLock, Object: orders
+### Before (External Files)
+
+```go
+// Search in multiple directories
+possiblePaths := []string{
+    "locales",
+    "../locales",
+    "../../locales",
+}
 ```
 
-### Continuous Monitoring
+### After (Embedded Files)
+
+```go
+// Direct access to embedded files
+localesFS := locales.GetLocalesFS()
+content, err := fs.ReadFile(localesFS, "fr.json")
+```
+
+## 🛠️ Maintenance
+
+### Verifying Embedded Files
 
 ```bash
-# Monitor locks every 30 seconds
-./build/lockanalyzer-cli -dsn="postgres://user:pass@localhost:5432/db" -interval=30s -lang=en
+# List embedded files
+go run -c 'package main; import "github.com/pbouamriou/lock-analyzer/locales"; func main() { files, _ := locales.ListLocaleFiles(); for _, f := range files { println(f) } }'
+
+# Check file content
+go run -c 'package main; import "github.com/pbouamriou/lock-analyzer/locales"; func main() { content, _ := locales.GetLocaleFile("fr.json"); println(string(content)) }'
+
+# Alternative: Use the built tool
+./build/lockanalyzer-cli -help -lang=en
+./build/lockanalyzer-cli -help -lang=fr
 ```
 
-### Integration with CI/CD
+### Updating Translations
 
-```bash
-# Generate JSON report for automated analysis
-./build/lockanalyzer-cli -dsn="postgres://user:pass@localhost:5432/db" -format=json -output=lock_report.json
+1. Modify JSON files in `locales/`
+2. Rebuild the application
+3. New translations are automatically included
 
-# Check for critical issues
-if jq '.summary.critical_issues > 0' lock_report.json; then
-    echo "Critical lock issues detected!"
-    exit 1
-fi
+## 📚 API Reference
+
+The API reference provides detailed information about the LockAnalyzer components and interfaces. For CLI parameters, see the [Configuration](#-configuration) section above.
+
+### Core Interfaces
+
+#### LockReportFormatter
+
+```go
+type LockReportFormatter interface {
+    Format(report *LockReport) (string, error)
+}
 ```
 
-## Troubleshooting
+#### LockAnalyzer
 
-### Common Issues
+```go
+type LockAnalyzer struct {
+    db *sql.DB
+}
 
-1. **Connection refused**: Check PostgreSQL server status and connection parameters
-2. **Permission denied**: Ensure the database user has sufficient privileges
-3. **No locks detected**: The database might be idle or locks might be too short-lived
-
-### Debug Mode
-
-Enable verbose logging by setting the log level:
-
-```bash
-export LOG_LEVEL=debug
-./build/lockanalyzer-cli -dsn="postgres://user:pass@localhost:5432/db"
+func (la *LockAnalyzer) Analyze() (*LockReport, error)
+func (la *LockAnalyzer) Monitor(interval time.Duration, output chan<- *LockReport)
 ```
 
-## Contributing
+### Data Structures
 
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+#### LockReport
 
-### Development Guidelines
+```go
+type LockReport struct {
+    Summary       SummaryInfo
+    ActiveLocks   []LockInfo
+    BlockedTxns   []TransactionInfo
+    LongTxns      []TransactionInfo
+    Suggestions   []string
+    GeneratedAt   time.Time
+}
+```
 
-- Follow Go coding standards
-- Add tests for new features
-- Update documentation as needed
-- Use English for code comments and variable names
-- Follow the existing project structure
+### Internationalization
 
-## License
+#### Translator
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+```go
+type Translator struct {
+    bundle *i18n.Bundle
+}
 
-## Acknowledgments
+func (t *Translator) Translate(key string, lang string) string
+func (t *Translator) GetSupportedLanguages() []string
+```
 
-- Built with [Bun ORM](https://bun.uptrace.dev/) for PostgreSQL
-- Uses [go-i18n](https://github.com/nicksnyder/go-i18n) for internationalization
-- Inspired by PostgreSQL's built-in lock monitoring capabilities
+## 📄 License
 
-## Support
-
-For questions, issues, or contributions:
-
-- Open an issue on GitHub
-- Check the documentation in the `docs/` directory
-- Review the test examples for usage patterns
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.

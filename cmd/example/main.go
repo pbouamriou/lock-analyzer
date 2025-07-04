@@ -271,9 +271,13 @@ func testConcurrentTransactions(db *bun.DB, ctx1, ctx2 context.Context, model Mo
 
 	// Display locks before T2
 	fmt.Println("\n--- Locks state before T2 ---")
-	markdownFormatter := formatters.NewMarkdownFormatter("")
-	if err := formatters.GenerateAndDisplayReport(db, markdownFormatter); err != nil {
-		log.Printf("Error displaying report: %v", err)
+	markdownFormatter, err := formatters.NewMarkdownFormatter("fr")
+	if err != nil {
+		log.Printf("Error creating markdown formatter: %v", err)
+	} else {
+		if err := formatters.GenerateAndDisplayReport(db, markdownFormatter); err != nil {
+			log.Printf("Error displaying report: %v", err)
+		}
 	}
 
 	// Transaction T2: UPDATE files (short transaction)
@@ -304,9 +308,13 @@ func testConcurrentTransactions(db *bun.DB, ctx1, ctx2 context.Context, model Mo
 			case <-ticker.C:
 				fmt.Println("\n--- Real-time locks analysis ---")
 				// Display report in markdown format
-				markdownFormatter := formatters.NewMarkdownFormatter("")
-				if err := formatters.GenerateAndDisplayReport(db, markdownFormatter); err != nil {
-					fmt.Printf("Error displaying report: %v\n", err)
+				markdownFormatter, err := formatters.NewMarkdownFormatter("fr")
+				if err != nil {
+					fmt.Printf("Error creating markdown formatter: %v\n", err)
+				} else {
+					if err := formatters.GenerateAndDisplayReport(db, markdownFormatter); err != nil {
+						fmt.Printf("Error displaying report: %v\n", err)
+					}
 				}
 			case <-stopAnalysis:
 				return
@@ -328,9 +336,13 @@ func testConcurrentTransactions(db *bun.DB, ctx1, ctx2 context.Context, model Mo
 
 	// Display locks after T2
 	fmt.Println("\n--- Locks state after T2 ---")
-	postMarkdownFormatter := formatters.NewMarkdownFormatter("")
-	if err := formatters.GenerateAndDisplayReport(db, postMarkdownFormatter); err != nil {
-		log.Printf("Error displaying report: %v", err)
+	postMarkdownFormatter, err := formatters.NewMarkdownFormatter("fr")
+	if err != nil {
+		log.Printf("Error creating markdown formatter: %v", err)
+	} else {
+		if err := formatters.GenerateAndDisplayReport(db, postMarkdownFormatter); err != nil {
+			log.Printf("Error displaying report: %v", err)
+		}
 	}
 
 	fmt.Println("Pause for 5 seconds")
@@ -350,9 +362,17 @@ func testConcurrentTransactions(db *bun.DB, ctx1, ctx2 context.Context, model Mo
 	fmt.Println("\n--- Generating analysis report ---")
 
 	// Generate final reports
-	finalTextFormatter := formatters.NewTextFormatter("")
+	finalTextFormatter, err := formatters.NewTextFormatter("fr")
+	if err != nil {
+		log.Printf("Error creating text formatter: %v", err)
+		return
+	}
 	finalJSONFormatter := formatters.NewJSONFormatter("")
-	finalMarkdownFormatter := formatters.NewMarkdownFormatter("")
+	finalMarkdownFormatter, err := formatters.NewMarkdownFormatter("fr")
+	if err != nil {
+		log.Printf("Error creating markdown formatter: %v", err)
+		return
+	}
 
 	// Generate text report
 	if err := formatters.GenerateAndWriteReport(db, finalTextFormatter, fmt.Sprintf("lock_report_%s.txt", fileType)); err != nil {

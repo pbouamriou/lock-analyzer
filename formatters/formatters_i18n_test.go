@@ -92,7 +92,10 @@ func TestTextFormatterI18n(t *testing.T) {
 
 	for _, lang := range languages {
 		t.Run("language_"+lang, func(t *testing.T) {
-			formatter := NewTextFormatter(lang)
+			formatter, err := NewTextFormatter(lang)
+			if err != nil {
+				t.Fatalf("Error creating text formatter: %v", err)
+			}
 			if formatter == nil {
 				t.Fatal("NewTextFormatter should not return nil")
 			}
@@ -117,7 +120,7 @@ func TestTextFormatterI18n(t *testing.T) {
 			}
 
 			var buf bytes.Buffer
-			err := formatter.Format(data, &buf)
+			err = formatter.Format(data, &buf)
 			if err != nil {
 				t.Errorf("Error during formatting: %v", err)
 			}
@@ -144,7 +147,10 @@ func TestMarkdownFormatterI18n(t *testing.T) {
 
 	for _, lang := range languages {
 		t.Run("language_"+lang, func(t *testing.T) {
-			formatter := NewMarkdownFormatter(lang)
+			formatter, err := NewMarkdownFormatter(lang)
+			if err != nil {
+				t.Fatalf("Error creating markdown formatter: %v", err)
+			}
 			if formatter == nil {
 				t.Fatal("NewMarkdownFormatter should not return nil")
 			}
@@ -169,7 +175,7 @@ func TestMarkdownFormatterI18n(t *testing.T) {
 			}
 
 			var buf bytes.Buffer
-			err := formatter.Format(data, &buf)
+			err = formatter.Format(data, &buf)
 			if err != nil {
 				t.Errorf("Error during formatting: %v", err)
 			}
